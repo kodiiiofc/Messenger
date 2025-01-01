@@ -1,5 +1,6 @@
-package com.kodiiiofc.urbanuniversity.jetpackcompose.messenger
+package com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.di
 
+import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.BuildConfig
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

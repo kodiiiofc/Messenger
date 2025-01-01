@@ -1,6 +1,7 @@
 [versions]
 agp = "8.7.3"
 hiltAndroid = "2.54"
+hiltNavigationCompose = "1.2.0"
 kotlin = "2.0.0"
 coreKtx = "1.15.0"
 junit = "4.13.2"
@@ -12,10 +13,13 @@ activityCompose = "1.9.3"
 composeBom = "2024.12.01"
 ksp-version = "2.0.0-1.0.24"
 hilt-version = "2.54"
+navigationCompose = "2.8.5"
 supabaseKt = "3.0.3"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
+androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt-version" }
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt-version" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -38,6 +42,7 @@ ktor-utils = { module = "io.ktor:ktor-utils", version.ref = "ktorClient" }
 supabase-kt = { module = "io.github.jan-tennert.supabase:supabase-kt", version.ref = "supabaseKt" }
 supabase-postgrest = { module = "io.github.jan-tennert.supabase:postgrest-kt-android", version.ref = "supabaseKt" }
 supabase-storage = { module = "io.github.jan-tennert.supabase:storage-kt", version.ref = "supabaseKt" }
+androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "navigationCompose" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

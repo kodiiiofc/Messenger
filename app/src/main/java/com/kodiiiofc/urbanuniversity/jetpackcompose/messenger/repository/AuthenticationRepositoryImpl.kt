@@ -1,4 +1,4 @@
-package com.kodiiiofc.urbanuniversity.jetpackcompose.messenger
+package com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.repository
 
 import android.util.Log
 import io.github.jan.supabase.auth.Auth
