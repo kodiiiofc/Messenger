@@ -4,18 +4,23 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+//    kotlin("kapt")
 
     id("org.jetbrains.kotlin.plugin.serialization")
+
+//    id("kotlin-kapt")
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
 }
 
 android {
     namespace = "com.kodiiiofc.urbanuniversity.jetpackcompose.messenger"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.kodiiiofc.urbanuniversity.jetpackcompose.messenger"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -75,11 +80,15 @@ dependencies {
 //    implementation("io.github.jan-tennert.supabase:postgrest-kt:1.0.0")
 //    implementation("io.github.jan-tennert.supabase:storage-kt:1.0.0")
 //    implementation("io.github.jan-tennert.supabase:auth-kt:1.0.0")
-    implementation("io.github.jan-tennert.supabase:supabase-kt:1.0.0")
-    implementation("io.ktor:ktor-client-okhttp:2.0.0")
-    implementation("io.ktor:ktor-client-android:2.0.0")
-    implementation("io.ktor:ktor-client-core:2.0.0")
-    implementation("io.ktor:ktor-utils:2.0.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.0")
+    implementation(libs.supabase.kt)
+    implementation(libs.ktor.client.okhttp)
+    implementation(libs.ktor.client.android)
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.utils)
+//    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:2.0.0")
+
+    //dagger hilt
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
 
 }

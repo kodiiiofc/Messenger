@@ -1,16 +1,23 @@
 [versions]
-agp = "8.7.1"
+agp = "8.7.3"
+hiltAndroid = "2.54"
 kotlin = "2.0.0"
-coreKtx = "1.13.1"
+coreKtx = "1.15.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
+ktorClient = "3.0.3"
 lifecycleRuntimeKtx = "2.8.7"
 activityCompose = "1.9.3"
 composeBom = "2024.12.01"
+ksp-version = "2.0.0-1.0.24"
+hilt-version = "2.54"
+supabaseKt = "3.0.3"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt-version" }
+hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt-version" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -24,9 +31,16 @@ androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-toolin
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
+ktor-client-android = { module = "io.ktor:ktor-client-android", version.ref = "ktorClient" }
+ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktorClient" }
+ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktorClient" }
+ktor-utils = { module = "io.ktor:ktor-utils", version.ref = "ktorClient" }
+supabase-kt = { module = "io.github.jan-tennert.supabase:supabase-kt", version.ref = "supabaseKt" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+ksp = {id = "com.google.devtools.ksp", version.ref = "ksp-version"}
+hilt = {id = "com.google.dagger.hilt.android", version.ref = "hilt-version"}
 
