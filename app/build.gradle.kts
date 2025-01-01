@@ -81,6 +81,8 @@ dependencies {
 //    implementation("io.github.jan-tennert.supabase:storage-kt:1.0.0")
 //    implementation("io.github.jan-tennert.supabase:auth-kt:1.0.0")
     implementation(libs.supabase.kt)
+    implementation(libs.supabase.postgrest)
+    implementation(libs.supabase.storage)
     implementation(libs.ktor.client.okhttp)
     implementation(libs.ktor.client.android)
     implementation(libs.ktor.client.core)

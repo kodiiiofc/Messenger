@@ -36,6 +36,8 @@ ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktorCli
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktorClient" }
 ktor-utils = { module = "io.ktor:ktor-utils", version.ref = "ktorClient" }
 supabase-kt = { module = "io.github.jan-tennert.supabase:supabase-kt", version.ref = "supabaseKt" }
+supabase-postgrest = { module = "io.github.jan-tennert.supabase:postgrest-kt-android", version.ref = "supabaseKt" }
+supabase-storage = { module = "io.github.jan-tennert.supabase:storage-kt", version.ref = "supabaseKt" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
