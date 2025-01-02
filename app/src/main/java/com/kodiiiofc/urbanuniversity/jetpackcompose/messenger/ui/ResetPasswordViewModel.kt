@@ -11,32 +11,18 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SignInViewModel @Inject constructor(
+class ResetPasswordViewModel @Inject constructor(
     private val authenticationRepository: AuthenticationRepository
 ) : ViewModel() {
 
-    private val _email = MutableStateFlow("")
-    val email: Flow<String> = _email
-
     private val _password = MutableStateFlow("")
     val password = _password
-
-    fun onEmailChange(email: String) {
-        _email.value = email
-    }
 
     fun onPasswordChange(password: String) {
         _password.value = password
     }
 
-    suspend fun onSignIn(): Boolean {
-        return authenticationRepository.signIn(
-            email = _email.value,
-            password = _password.value
-        )
-    }
-
-    suspend fun onResetPassword() : Boolean {
-        return authenticationRepository.resetPassword(email = _email.value)
+    suspend fun onResetPassword(token: String) : Boolean {
+        return authenticationRepository.resetPasswordWithToken(token, password.value)
     }
 }

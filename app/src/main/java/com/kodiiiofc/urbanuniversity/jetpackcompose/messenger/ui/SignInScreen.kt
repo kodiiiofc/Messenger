@@ -141,7 +141,24 @@ fun SignInScreen(
                     Text("Войти")
                 }
 
-                TextButton(onClick = {/*TODO*/ }) {
+                TextButton(onClick = {
+
+                    coroutineScope.launch {
+                        if (viewModel.onResetPassword()) {
+                            Toast.makeText(
+                                navController.context,
+                                "Пароль успешно сброшен",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        } else {
+                            Toast.makeText(
+                                navController.context,
+                                "Что-то пошло не так",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    }
+                }) {
                     Text("Забыл(а) пароль")
                 }
             }

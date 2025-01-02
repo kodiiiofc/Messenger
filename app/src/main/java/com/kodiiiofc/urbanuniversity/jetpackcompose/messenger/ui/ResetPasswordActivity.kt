@@ -22,7 +22,7 @@ import io.github.jan.supabase.SupabaseClient
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class ResetPasswordActivity : ComponentActivity() {
 
     @Inject
     lateinit var supabaseClient: SupabaseClient
@@ -30,19 +30,21 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-
         setContent {
             MessengerTheme {
-
-                NavGraph()
-
-
-//                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-//                    Greeting(
-//                        name = "Android",
-//                        modifier = Modifier.padding(innerPadding)
-//                    )
-//                }
+                val data: Uri? = intent.data
+                if (data != null) {
+                    val token = data.getQueryParameter("token")
+                    if (token != null) {
+                        NavGraph(
+                            Routes.RESET_PASSWORD, bundleOf(
+                                "token" to token
+                            )
+                        )
+                    } else {
+                        Toast.makeText(this, "Invalid link", Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
         }
     }

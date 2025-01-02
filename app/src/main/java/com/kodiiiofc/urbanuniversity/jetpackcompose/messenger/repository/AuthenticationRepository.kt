@@ -11,4 +11,8 @@ interface AuthenticationRepository {
         email: String,
         password: String
     ) : Boolean
+
+    suspend fun resetPassword(email: String): Boolean
+
+    suspend fun resetPasswordWithToken(token: String, password: String) : Boolean
 }
