@@ -1,6 +1,9 @@
 package com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.di
 
 import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.BuildConfig
+import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.repository.AuthenticationRepository
+import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.repository.AuthenticationRepositoryImpl
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -55,4 +58,5 @@ object AppModule {
     fun provideSupabaseStorage(client: SupabaseClient) : Storage {
         return client.storage
     }
+
 }

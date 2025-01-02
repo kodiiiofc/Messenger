@@ -1,5 +1,6 @@
 package com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.ui
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -41,23 +42,30 @@ import kotlinx.coroutines.launch
 import kotlin.reflect.jvm.internal.impl.descriptors.Visibilities.Local
 
 @Composable
-fun SignUpScreen(
+fun SignInScreen(
     navController: NavController,
-    viewModel: SignUpViewModel = hiltViewModel()
+//    viewModel: SignUpViewModel = hiltViewModel()
 ) {
 
     val coroutineScope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
-    val email = viewModel.email.collectAsState(initial = "")
-    val password = viewModel.password.collectAsState()
+//    val email = viewModel.email.collectAsState(initial = "")
+//    val password = viewModel.password.collectAsState()
+
+    val email = remember {
+        mutableStateOf("")
+    }
+
+    val password = remember {
+        mutableStateOf("")
+    }
+
     var passwordConfirmation by remember {
         mutableStateOf("")
     }
     val passwordMatch by remember {
-        derivedStateOf { password.value == passwordConfirmation
-                && password.value != ""
-                && passwordConfirmation != "" }
+        derivedStateOf { password.value == passwordConfirmation }
     }
 
     Box(
@@ -68,9 +76,16 @@ fun SignUpScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxWidth()
         ) {
+            Image(
+
+            )
+
             OutlinedTextField(
                 value = email.value,
-                onValueChange = { viewModel.onEmailChange(it) },
+                onValueChange = {
+                    email.value = it
+//                    viewModel.onEmailChange(it)
+                                },
                 label = { Text("Электронная почта") },
                 leadingIcon = { Icon(Icons.Default.Email, "Электронная почта") },
                 keyboardOptions = KeyboardOptions(
@@ -80,7 +95,10 @@ fun SignUpScreen(
             Spacer(Modifier.size(8.dp))
             OutlinedTextField(
                 value = password.value,
-                onValueChange = { viewModel.onPasswordChange(it) },
+                onValueChange = {
+                    password.value = it
+//                    viewModel.onPasswordChange(it)
+                                },
                 label = { Text("Пароль") },
                 leadingIcon = { Icon(Icons.Default.Lock, "Пароль") },
                 keyboardOptions = KeyboardOptions(
@@ -88,22 +106,7 @@ fun SignUpScreen(
                 ),
                 visualTransformation = PasswordVisualTransformation(),
             )
-            Spacer(Modifier.size(8.dp))
-            OutlinedTextField(
-                value = passwordConfirmation,
-                onValueChange = { passwordConfirmation = it },
-                label = { Text("Подтверждение пароля") },
-                leadingIcon = {
-                    Icon(
-                        if (passwordMatch) Icons.Default.Check else Icons.Default.Close,
-                        "Пароль"
-                    )
-                },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Password
-                ),
-                visualTransformation = PasswordVisualTransformation(),
-            )
+
             Spacer(Modifier.size(24.dp))
             val localSoftwareKeyboardController = LocalSoftwareKeyboardController.current
 
@@ -111,7 +114,7 @@ fun SignUpScreen(
                 onClick = {
                     localSoftwareKeyboardController?.hide()
                     coroutineScope.launch {
-                        viewModel.onSignUp()
+//                        viewModel.onSignUp()
                         snackbarHostState.showSnackbar(
                             message = "Регистрация успешна.",
                             duration = SnackbarDuration.Long
@@ -123,8 +126,12 @@ fun SignUpScreen(
                 Text("Зарегистрироваться")
             }
 
-            Spacer(Modifier.size(48.dp))
-
         }
     }
+}
+
+@Preview(showSystemUi = true)
+@Composable
+fun SignInScreenPreview() {
+    SignInScreen(rememberNavController())
 }

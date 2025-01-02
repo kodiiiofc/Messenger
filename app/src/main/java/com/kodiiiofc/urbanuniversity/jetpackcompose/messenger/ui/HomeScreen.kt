@@ -29,7 +29,7 @@ fun HomeScreen(navController: NavController) {
 
             Button(
                 onClick = {
-                    navController.navigate(Routes.SIGN_IN)
+//                    navController.navigate(Routes.SIGN_IN)
                 }
             ) {
                 Text("Войти в учетную запись")
@@ -38,7 +38,7 @@ fun HomeScreen(navController: NavController) {
             Spacer(Modifier.size(8.dp))
 
             Button(
-                onClick = { /*TODO*/ }
+                onClick = { navController.navigate(Routes.SIGN_UP) }
             ) {
                 Text("Регистрация")
             }

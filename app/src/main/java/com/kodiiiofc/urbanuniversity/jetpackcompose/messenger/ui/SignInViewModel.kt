@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SignUpViewModel @Inject constructor(
+class SignInViewModel @Inject constructor(
     private val authenticationRepository: AuthenticationRepository
 ) : ViewModel() {
 
@@ -28,8 +28,8 @@ class SignUpViewModel @Inject constructor(
         _password.value = password
     }
 
-    suspend fun onSignUp() {
-        authenticationRepository.signUp(
+    suspend fun onSignIn() {
+        authenticationRepository.signIn(
             email = _email.value,
             password = _password.value
         )

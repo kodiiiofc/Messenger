@@ -24,7 +24,7 @@ class AuthenticationRepositoryImpl @Inject constructor(
 
     override suspend fun signUp(email: String, password: String): Boolean {
         return try {
-            auth.signInWith(Email) {
+            auth.signUpWith(Email) {
                 this.email = email
                 this.password = password
             }
