@@ -19,6 +19,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -30,6 +31,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,35 +40,29 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.navigation.Routes
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.data.AvatarResources
 import kotlinx.coroutines.launch
 import kotlin.reflect.jvm.internal.impl.descriptors.Visibilities.Local
 
 @Composable
 fun SignInScreen(
     navController: NavController,
-//    viewModel: SignUpViewModel = hiltViewModel()
+    viewModel: SignInViewModel = hiltViewModel()
 ) {
 
     val coroutineScope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
-//    val email = viewModel.email.collectAsState(initial = "")
-//    val password = viewModel.password.collectAsState()
+    val email = viewModel.email.collectAsState(initial = "")
+    val password = viewModel.password.collectAsState()
 
-    val email = remember {
-        mutableStateOf("")
-    }
+//    val email = remember {
+//        mutableStateOf("")
+//    }
 
-    val password = remember {
-        mutableStateOf("")
-    }
-
-    var passwordConfirmation by remember {
-        mutableStateOf("")
-    }
-    val passwordMatch by remember {
-        derivedStateOf { password.value == passwordConfirmation }
-    }
+//    val password = remember {
+//        mutableStateOf("")
+//    }
 
     Box(
         contentAlignment = Alignment.Center,
@@ -77,55 +73,64 @@ fun SignInScreen(
             modifier = Modifier.fillMaxWidth()
         ) {
             Image(
-
+                painterResource(AvatarResources.list.random()),
+                "Изображение профиля",
+                modifier = Modifier.size(120.dp).weight(1f)
             )
 
-            OutlinedTextField(
-                value = email.value,
-                onValueChange = {
-                    email.value = it
-//                    viewModel.onEmailChange(it)
-                                },
-                label = { Text("Электронная почта") },
-                leadingIcon = { Icon(Icons.Default.Email, "Электронная почта") },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Email
-                )
-            )
-            Spacer(Modifier.size(8.dp))
-            OutlinedTextField(
-                value = password.value,
-                onValueChange = {
-                    password.value = it
-//                    viewModel.onPasswordChange(it)
-                                },
-                label = { Text("Пароль") },
-                leadingIcon = { Icon(Icons.Default.Lock, "Пароль") },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Password
-                ),
-                visualTransformation = PasswordVisualTransformation(),
-            )
-
-            Spacer(Modifier.size(24.dp))
-            val localSoftwareKeyboardController = LocalSoftwareKeyboardController.current
-
-            Button(
-                onClick = {
-                    localSoftwareKeyboardController?.hide()
-                    coroutineScope.launch {
-//                        viewModel.onSignUp()
-                        snackbarHostState.showSnackbar(
-                            message = "Регистрация успешна.",
-                            duration = SnackbarDuration.Long
-                        )
-                    }
-                },
-                enabled = passwordMatch
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxWidth().weight(2f)
             ) {
-                Text("Зарегистрироваться")
-            }
+                OutlinedTextField(
+                    value = email.value,
+                    onValueChange = {
+//                        email.value = it
+                    viewModel.onEmailChange(it)
+                    },
+                    label = { Text("Электронная почта") },
+                    leadingIcon = { Icon(Icons.Default.Email, "Электронная почта") },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Email
+                    )
+                )
+                Spacer(Modifier.size(8.dp))
+                OutlinedTextField(
+                    value = password.value,
+                    onValueChange = {
+//                        password.value = it
+                    viewModel.onPasswordChange(it)
+                    },
+                    label = { Text("Пароль") },
+                    leadingIcon = { Icon(Icons.Default.Lock, "Пароль") },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Password
+                    ),
+                    visualTransformation = PasswordVisualTransformation(),
+                )
 
+                Spacer(Modifier.size(24.dp))
+                val localSoftwareKeyboardController = LocalSoftwareKeyboardController.current
+
+                Button(
+                    onClick = {
+                        localSoftwareKeyboardController?.hide()
+                        coroutineScope.launch {
+                        viewModel.onSignIn()
+                            snackbarHostState.showSnackbar(
+                                message = "Регистрация успешна.",
+                                duration = SnackbarDuration.Long
+                            )
+                        }
+                    },
+                ) {
+                    Text("Войти")
+                }
+
+                TextButton(onClick = {/*TODO*/}) {
+                    Text("Забыл(а) пароль")
+                }
+            }
         }
     }
 }
