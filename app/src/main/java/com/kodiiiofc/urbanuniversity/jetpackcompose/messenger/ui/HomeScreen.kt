@@ -29,7 +29,7 @@ fun HomeScreen(navController: NavController) {
 
             Button(
                 onClick = {
-//                    navController.navigate(Routes.SIGN_IN)
+                    navController.navigate(Routes.SIGN_IN)
                 }
             ) {
                 Text("Войти в учетную запись")

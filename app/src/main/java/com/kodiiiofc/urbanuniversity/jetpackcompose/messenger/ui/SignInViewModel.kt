@@ -1,5 +1,6 @@
 package com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.ui
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.repository.AuthenticationRepository
@@ -28,8 +29,8 @@ class SignInViewModel @Inject constructor(
         _password.value = password
     }
 
-    suspend fun onSignIn() {
-        authenticationRepository.signIn(
+    suspend fun onSignIn(): Boolean {
+        return authenticationRepository.signIn(
             email = _email.value,
             password = _password.value
         )

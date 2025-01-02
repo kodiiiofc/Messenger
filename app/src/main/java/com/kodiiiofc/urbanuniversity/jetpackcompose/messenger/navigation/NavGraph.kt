@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.ui.HomeScreen
+import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.ui.SignInScreen
 import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.ui.SignUpScreen
 
 @Composable
@@ -18,7 +19,7 @@ fun NavGraph() {
         startDestination = Routes.HOME
     ) {
         composable(Routes.HOME) { HomeScreen(navController) }
-//        composable(Routes.SIGN_IN) {SignInScreen(navController)}
+        composable(Routes.SIGN_IN) {SignInScreen(navController)}
         composable(Routes.SIGN_UP) {SignUpScreen(navController)}
     }
 

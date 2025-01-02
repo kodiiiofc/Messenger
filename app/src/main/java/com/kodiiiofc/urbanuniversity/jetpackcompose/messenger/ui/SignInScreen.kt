@@ -1,5 +1,7 @@
 package com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.ui
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,6 +43,7 @@ import androidx.navigation.compose.rememberNavController
 import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.navigation.Routes
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.data.AvatarResources
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
 import kotlin.reflect.jvm.internal.impl.descriptors.Visibilities.Local
 
@@ -55,6 +58,10 @@ fun SignInScreen(
 
     val email = viewModel.email.collectAsState(initial = "")
     val password = viewModel.password.collectAsState()
+
+    val imageProfile = remember {
+        mutableStateOf(AvatarResources.list.random())
+    }
 
 //    val email = remember {
 //        mutableStateOf("")
@@ -73,33 +80,38 @@ fun SignInScreen(
             modifier = Modifier.fillMaxWidth()
         ) {
             Image(
-                painterResource(AvatarResources.list.random()),
+                painterResource(imageProfile.value),
                 "Изображение профиля",
-                modifier = Modifier.size(120.dp).weight(1f)
+                modifier = Modifier
+                    .size(120.dp)
+                    .weight(1f)
             )
 
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxWidth().weight(2f)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(2f)
             ) {
                 OutlinedTextField(
                     value = email.value,
                     onValueChange = {
 //                        email.value = it
-                    viewModel.onEmailChange(it)
+                        viewModel.onEmailChange(it)
                     },
                     label = { Text("Электронная почта") },
                     leadingIcon = { Icon(Icons.Default.Email, "Электронная почта") },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Email
-                    )
+                    ),
+                    singleLine = true
                 )
                 Spacer(Modifier.size(8.dp))
                 OutlinedTextField(
                     value = password.value,
                     onValueChange = {
 //                        password.value = it
-                    viewModel.onPasswordChange(it)
+                        viewModel.onPasswordChange(it)
                     },
                     label = { Text("Пароль") },
                     leadingIcon = { Icon(Icons.Default.Lock, "Пароль") },
@@ -107,6 +119,7 @@ fun SignInScreen(
                         keyboardType = KeyboardType.Password
                     ),
                     visualTransformation = PasswordVisualTransformation(),
+                    singleLine = true
                 )
 
                 Spacer(Modifier.size(24.dp))
@@ -116,27 +129,22 @@ fun SignInScreen(
                     onClick = {
                         localSoftwareKeyboardController?.hide()
                         coroutineScope.launch {
-                        viewModel.onSignIn()
-                            snackbarHostState.showSnackbar(
-                                message = "Регистрация успешна.",
-                                duration = SnackbarDuration.Long
-                            )
+                            viewModel.onSignIn()
+                            Toast.makeText(
+                                navController.context,
+                                "Успешный вход",
+                                Toast.LENGTH_LONG
+                            ).show()
                         }
                     },
                 ) {
                     Text("Войти")
                 }
 
-                TextButton(onClick = {/*TODO*/}) {
+                TextButton(onClick = {/*TODO*/ }) {
                     Text("Забыл(а) пароль")
                 }
             }
         }
     }
-}
-
-@Preview(showSystemUi = true)
-@Composable
-fun SignInScreenPreview() {
-    SignInScreen(rememberNavController())
 }
