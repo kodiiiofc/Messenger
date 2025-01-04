@@ -24,6 +24,7 @@ fun NavGraph(destination: String = Routes.HOME, bundle: Bundle? = null) {
         composable(Routes.SIGN_IN) {SignInScreen(navController)}
         composable(Routes.SIGN_UP) {SignUpScreen(navController)}
         composable(Routes.RESET_PASSWORD) {ResetPasswordScreen(navController, bundle = bundle)}
+        composable(Routes.CHAT) {ResetPasswordScreen(navController, bundle = bundle)}
     }
 
 }

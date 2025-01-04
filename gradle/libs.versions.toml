@@ -42,6 +42,7 @@ ktor-utils = { module = "io.ktor:ktor-utils", version.ref = "ktorClient" }
 supabase-kt = { module = "io.github.jan-tennert.supabase:supabase-kt", version.ref = "supabaseKt" }
 supabase-postgrest = { module = "io.github.jan-tennert.supabase:postgrest-kt-android", version.ref = "supabaseKt" }
 supabase-storage = { module = "io.github.jan-tennert.supabase:storage-kt", version.ref = "supabaseKt" }
+supabase-realtime = { module = "io.github.jan-tennert.supabase:realtime-kt", version.ref = "supabaseKt" }
 androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "navigationCompose" }
 
 [plugins]
