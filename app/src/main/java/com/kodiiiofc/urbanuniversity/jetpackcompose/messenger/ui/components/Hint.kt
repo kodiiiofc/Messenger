@@ -27,7 +27,7 @@ fun Hint(headline: String, supportingText: String) {
 
     ) {
         Text(
-            text = "Регистрация",
+            text = headline,
             fontWeight = FontWeight.Medium,
             fontSize = 16.sp,
             lineHeight = 24.sp
