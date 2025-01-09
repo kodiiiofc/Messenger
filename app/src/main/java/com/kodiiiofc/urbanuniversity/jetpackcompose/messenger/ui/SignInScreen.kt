@@ -1,6 +1,5 @@
 package com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.ui
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -11,41 +10,32 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.navigation.Routes
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.data.AvatarResources
-import dagger.hilt.android.qualifiers.ApplicationContext
+import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.navigation.Screen
 import kotlinx.coroutines.launch
-import kotlin.reflect.jvm.internal.impl.descriptors.Visibilities.Local
+import java.util.UUID
 
 @Composable
 fun SignInScreen(
@@ -62,14 +52,6 @@ fun SignInScreen(
     val imageProfile = remember {
         mutableStateOf(AvatarResources.list.random())
     }
-
-//    val email = remember {
-//        mutableStateOf("")
-//    }
-
-//    val password = remember {
-//        mutableStateOf("")
-//    }
 
     Box(
         contentAlignment = Alignment.Center,
@@ -96,7 +78,6 @@ fun SignInScreen(
                 OutlinedTextField(
                     value = email.value,
                     onValueChange = {
-//                        email.value = it
                         viewModel.onEmailChange(it)
                     },
                     label = { Text("Электронная почта") },
@@ -110,7 +91,6 @@ fun SignInScreen(
                 OutlinedTextField(
                     value = password.value,
                     onValueChange = {
-//                        password.value = it
                         viewModel.onPasswordChange(it)
                     },
                     label = { Text("Пароль") },
@@ -129,12 +109,21 @@ fun SignInScreen(
                     onClick = {
                         localSoftwareKeyboardController?.hide()
                         coroutineScope.launch {
-                            viewModel.onSignIn()
-                            Toast.makeText(
-                                navController.context,
-                                "Успешный вход",
-                                Toast.LENGTH_LONG
-                            ).show()
+                            if (viewModel.onSignIn()) {
+
+                                Toast.makeText(
+                                    navController.context,
+                                    "Успешный вход",
+                                    Toast.LENGTH_LONG
+                                ).show()
+
+
+                                navController.navigate(
+                                    route = Screen.ChatList.getChatList(
+                                        UUID.fromString("8f1d27ee-ef9d-498a-980f-03cce42a1619")
+                                    )
+                                )
+                            }
                         }
                     },
                 ) {

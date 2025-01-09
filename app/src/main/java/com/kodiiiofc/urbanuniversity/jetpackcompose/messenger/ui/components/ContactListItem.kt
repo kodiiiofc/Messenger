@@ -2,6 +2,7 @@ package com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,7 +30,7 @@ import java.util.UUID
 
 
 @Composable
-fun ContactListItem(contactListItemModel: ContactListItemModel) {
+fun ContactListItem(contactListItemModel: ContactListItemModel, onItemClick: () -> Unit) {
     Row(
         modifier = Modifier
             .padding(8.dp, 0.dp)
@@ -37,6 +38,7 @@ fun ContactListItem(contactListItemModel: ContactListItemModel) {
             .fillMaxWidth()
             .height(64.dp)
             .padding(16.dp, 12.dp)
+            .clickable { onItemClick() }
     ) {
         Image(
             painter = contactListItemModel.avatar ?: painterResource(R.drawable.avatar_empty),
@@ -65,5 +67,5 @@ fun ContactListItemPreview() {
         avatar = painterResource(AvatarResources.list[16])
     )
 
-    ContactListItem(item)
+    ContactListItem(item) {}
 }

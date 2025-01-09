@@ -2,6 +2,7 @@ package com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -25,7 +26,7 @@ import java.util.UUID
 
 
 @Composable
-fun ChatListItem(chatListItemModel: ChatListItemModel) {
+fun ChatListItem(chatListItemModel: ChatListItemModel, onItemClick: () -> Unit) {
     Row(
         modifier = Modifier
             .padding(8.dp, 0.dp)
@@ -33,6 +34,7 @@ fun ChatListItem(chatListItemModel: ChatListItemModel) {
             .fillMaxWidth()
             .height(88.dp)
             .padding(16.dp, 12.dp)
+            .clickable { onItemClick() }
     ) {
         Image(
             painter = chatListItemModel.avatar ?: painterResource(R.drawable.avatar_empty),
@@ -69,5 +71,5 @@ fun ChatListItemPreview() {
         avatar = painterResource(AvatarResources.list[16])
     )
 
-    ChatListItem(item)
+    ChatListItem(item) {}
 }
