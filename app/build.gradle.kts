@@ -19,7 +19,7 @@ android {
 
     defaultConfig {
         applicationId = "com.kodiiiofc.urbanuniversity.jetpackcompose.messenger"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -82,7 +82,7 @@ dependencies {
 //    implementation("io.github.jan-tennert.supabase:storage-kt:1.0.0")
 //    implementation("io.github.jan-tennert.supabase:auth-kt:1.0.0")
     implementation(libs.supabase.kt)
-    implementation(libs.supabase.postgrest)
+//    implementation(libs.supabase.postgrest)
     implementation(libs.supabase.storage)
     implementation(libs.supabase.realtime)
     implementation(libs.ktor.client.okhttp)

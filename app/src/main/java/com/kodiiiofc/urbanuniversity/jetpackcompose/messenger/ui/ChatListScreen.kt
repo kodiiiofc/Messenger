@@ -1,16 +1,18 @@
 package com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.ui
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.MoreVert
@@ -21,28 +23,37 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.R
 import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.data.AvatarResources
 import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.model.ChatListItemModel
+import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.model.ContactListItemModel
+import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.model.TabItem
+import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.ui.components.ChatListItem
+import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.ui.components.ContactListItem
 import java.util.UUID
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatListScreen() {
 
-    val contacts = listOf(
+    val chatContacts = listOf(
         ChatListItemModel(
             userId = UUID.randomUUID(),
             name = "Vasya Pupkin",
@@ -84,8 +95,81 @@ fun ChatListScreen() {
         ),
     )
 
+
+    val contacts = listOf(
+        ContactListItemModel(
+            userId = UUID.randomUUID(),
+            name = "Vasya Pupkin",
+            avatar = painterResource(AvatarResources.list[16]),
+        ),
+        ContactListItemModel(
+            userId = UUID.randomUUID(),
+            name = "Lesha",
+            avatar = painterResource(AvatarResources.list[13]),
+        ),
+        ContactListItemModel(
+            userId = UUID.randomUUID(),
+            name = "Ruslan",
+            avatar = painterResource(AvatarResources.list[12])
+        ),
+        ContactListItemModel(
+            userId = UUID.randomUUID(),
+            name = "Petr Perviy",
+        ),
+        ContactListItemModel(
+            userId = UUID.randomUUID(),
+            name = "Ilya V",
+            avatar = painterResource(AvatarResources.list[25]),
+        ),
+        ContactListItemModel(
+            userId = UUID.randomUUID(),
+            name = "Anastasia Sh",
+            avatar = painterResource(AvatarResources.list[7]),
+        ),
+        ContactListItemModel(
+            userId = UUID.randomUUID(),
+            name = "Lyudmila",
+            avatar = painterResource(AvatarResources.list[19])
+        ),
+    )
+
+
+
     val menuExpanded = remember {
         mutableStateOf(false)
+    }
+
+    val tabList = listOf(
+        TabItem(
+            title = "Чаты",
+            selectedIcon = ImageVector.vectorResource(R.drawable.chats_selected),
+            unselectedIcon = ImageVector.vectorResource(R.drawable.chats),
+        ),
+        TabItem(
+            title = "Контакты",
+            selectedIcon = ImageVector.vectorResource(R.drawable.contacts_selected),
+            unselectedIcon = ImageVector.vectorResource(R.drawable.contacts),
+        )
+    )
+
+    // TODO доделать вкладки
+
+    val selectedTab = remember {
+        mutableIntStateOf(0)
+    }
+
+    val pagerState = rememberPagerState {
+        tabList.size
+    }
+
+    LaunchedEffect(selectedTab.intValue) {
+        pagerState.animateScrollToPage(selectedTab.intValue)
+    }
+
+    LaunchedEffect(pagerState.currentPage, pagerState.isScrollInProgress) {
+        if (!pagerState.isScrollInProgress) {
+            selectedTab.intValue = pagerState.currentPage
+        }
     }
 
     Scaffold(
@@ -102,15 +186,50 @@ fun ChatListScreen() {
                 .padding(innerPadding)
                 .background(MaterialTheme.colorScheme.surface)
         ) {
-            Spacer(Modifier.size(8.dp))
-            LazyColumn(
+
+            HorizontalPager(
+                state = pagerState,
                 modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+            ) { index ->
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.TopCenter
+                ) {
+                    when (index) {
+                        1 -> {
+                            ContactsTabContent(contacts)
+                        }
+                        else -> ChatTabContent(chatContacts)
+                    }
+                }
+
+            }
+
+            TabRow(
+                selectedTabIndex = selectedTab.intValue
             ) {
-                items(contacts) {
-                    ChatListItem(it)
-                    Spacer(Modifier.size(8.dp))
+                tabList.forEachIndexed { index, tab ->
+                    Tab(
+                        selected = index == selectedTab.intValue,
+                        onClick = {
+                            selectedTab.intValue = index
+                        },
+                        text = { Text(text = tab.title) },
+                        icon = {
+                            Icon(
+                                imageVector = if (index == selectedTab.intValue) tab.selectedIcon else tab.unselectedIcon,
+                                contentDescription = tab.title,
+                            )
+                        }
+                    )
                 }
             }
+
+
+//            Spacer(Modifier.size(8.dp))
+
         }
 
 
@@ -139,11 +258,11 @@ private fun TopBar(menuExpanded: MutableState<Boolean>) {
                     onDismissRequest = { menuExpanded.value = false }
                 ) {
                     DropdownMenuItem(
-                        text = { "О приложении" },
+                        text = { Text("О приложении") },
                         onClick = {/*TODO*/ }
                     )
                     DropdownMenuItem(
-                        text = { "Выйти" },
+                        text = { Text("Выйти") },
                         onClick = { /*TODO navController.context.finish()*/ }
                     )
                 }
@@ -159,48 +278,25 @@ fun ChatListScreenPreview() {
 }
 
 @Composable
-fun ChatListItem(chatListItemModel: ChatListItemModel) {
-    Row(
+fun ChatTabContent(contacts: List<ChatListItemModel>) {
+    LazyColumn(
         modifier = Modifier
-            .padding(8.dp, 0.dp)
-            .background(MaterialTheme.colorScheme.surfaceContainer)
-            .fillMaxWidth()
-            .height(88.dp)
-            .padding(16.dp, 12.dp)
     ) {
-        Image(
-            painter = chatListItemModel.avatar ?: painterResource(R.drawable.avatar_empty),
-            contentDescription = chatListItemModel.name,
-            modifier = Modifier.size(40.dp)
-        )
-
-        Spacer(Modifier.size(16.dp))
-
-        Column(Modifier.fillMaxWidth()) {
-            Text(text = chatListItemModel.name, fontSize = 16.sp, lineHeight = 24.sp)
-            Text(
-                text = chatListItemModel.lastMessage,
-                maxLines = 2,
-                softWrap = true,
-                fontSize = 14.sp,
-                lineHeight = 20.sp,
-                overflow = TextOverflow.Ellipsis
-            )
+        items(contacts) {
+            ChatListItem(it) //TODO Добавить нажатие на элемент списка
+            Spacer(Modifier.size(8.dp))
         }
     }
 }
 
-@Preview(
-    showBackground = true,
-)
 @Composable
-fun ChatListItemPreview() {
-
-    val item = ChatListItemModel(
-        userId = UUID.randomUUID(),
-        name = "Vasya Pupkin",
-        avatar = painterResource(AvatarResources.list[16])
-    )
-
-    ChatListItem(item)
+fun ContactsTabContent(contacts: List<ContactListItemModel>) {
+    LazyColumn(
+        modifier = Modifier
+    ) {
+        items(contacts) {
+            ContactListItem(it)
+            Spacer(Modifier.size(8.dp))
+        }
+    }
 }
