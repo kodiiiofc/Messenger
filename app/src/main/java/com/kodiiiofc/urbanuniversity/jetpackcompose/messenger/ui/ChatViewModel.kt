@@ -1,7 +1,5 @@
 package com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.ui
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.model.MessageModel
@@ -20,8 +18,8 @@ class ChatViewModel
 
     suspend fun onSendMessage(senderId: UUID, receiverId: UUID, textMessage: String) : Boolean {
         val message = MessageModel(
-            senderId = senderId.toString(),
-            receiverId = receiverId.toString(),
+            sender_id = senderId.toString(),
+            receiver_id = receiverId.toString(),
             message = textMessage
         )
 

@@ -7,12 +7,12 @@ import java.util.UUID
 @Serializable
 data class MessageModel(
     val id: String = UUID.randomUUID().toString(),
-    val senderId: String,
-    val receiverId: String,
+    val sender_id: String,
+    val receiver_id: String,
     val message: String,
-    val createdAt: String = LocalDateTime.now().toString(),
-    val isRead: Boolean = false,
-    val messageType: String = "text", // "image", "document"
-    val imageUrl: String? = null,
-    val fileUrl: String? = null
+    val created_at: String = LocalDateTime.now().toString(),
+    val is_read: Boolean = false,
+    val message_type: String = "text", // "image", "document"
+    val image_url: String? = null,
+    val file_url: String? = null
 )

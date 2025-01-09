@@ -53,8 +53,8 @@ fun ChatBubbleUserPreview() {
 
     val message = MessageModel(
 
-        senderId = "0000dsa",
-        receiverId = "dsadsa",
+        sender_id = "0000dsa",
+        receiver_id = "dsadsa",
         message = text,
 
 
@@ -103,8 +103,8 @@ fun ChatBubbleContactPreview() {
 
     val message = MessageModel(
 
-        senderId = "0000dsa",
-        receiverId = "dsadsa",
+        sender_id = "0000dsa",
+        receiver_id = "dsadsa",
         message = text,
 
 
