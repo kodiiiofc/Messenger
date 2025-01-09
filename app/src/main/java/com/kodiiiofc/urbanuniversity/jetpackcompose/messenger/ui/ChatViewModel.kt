@@ -18,7 +18,6 @@ class ChatViewModel
     private val _messages = MutableStateFlow<List<MessageModel>>(emptyList())
     val messages: StateFlow<List<MessageModel>> get() = _messages
 
-    @RequiresApi(Build.VERSION_CODES.O)
     suspend fun onSendMessage(senderId: UUID, receiverId: UUID, textMessage: String) : Boolean {
         val message = MessageModel(
             senderId = senderId.toString(),
