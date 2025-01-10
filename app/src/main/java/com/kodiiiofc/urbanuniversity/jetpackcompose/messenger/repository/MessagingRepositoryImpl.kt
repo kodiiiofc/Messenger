@@ -28,8 +28,16 @@ class MessagingRepositoryImpl
             .from("public", "messages")
             .select {
                 filter {
-                    MessageModel::sender_id isIn listOf(userId, otherUserId)
-                    MessageModel::receiver_id isIn listOf(userId, otherUserId)
+                    or {
+                        and {
+                            MessageModel::sender_id eq userId
+                            MessageModel::receiver_id eq otherUserId
+                        }
+                        and {
+                            MessageModel::sender_id eq otherUserId
+                            MessageModel::receiver_id eq userId
+                        }
+                    }
                 }
                 order(column = "created_at", order = Order.ASCENDING)
             }
