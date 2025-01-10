@@ -102,11 +102,7 @@ fun NavGraph(destination: String = Screen.Home.route, bundle: Bundle? = null) {
             avatar = painterResource(AvatarResources.list[19])
         ),
     )
-
-
     val navController = rememberNavController()
-
-    // TODO: Решить проблему с навигацией!
 
     NavHost(
         navController = navController,
@@ -138,7 +134,6 @@ fun NavGraph(destination: String = Screen.Home.route, bundle: Bundle? = null) {
                 navArgument(USER_ID) { type = NavType.StringType },
                 navArgument(OTHER_USER_ID) { type = NavType.StringType })
         ) {
-            it.arguments
             ChatScreen(navController, bundle = it.arguments)
         }
     }

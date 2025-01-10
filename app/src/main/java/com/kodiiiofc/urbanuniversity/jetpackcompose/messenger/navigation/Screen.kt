@@ -14,7 +14,7 @@ sealed class Screen(val route: String) {
         fun getChatList(
             userId: UUID
         ) : String {
-            return "chat/$userId"
+            return "chatList/$userId"
         }
     }
     data object Chat : Screen("chat/{$USER_ID}/{$OTHER_USER_ID}") {

@@ -199,7 +199,7 @@ fun ChatListScreenPreview() {
             lastMessage = "Привет, как дела? Есть планы на вечер?"
         ),
         ChatListItemModel(
-            userId = UUID.randomUUID(),
+            userId = UUID.fromString("35b5efb9-2c4c-4aba-ad3b-445ba7ff459f"),
             name = "Lesha",
             avatar = painterResource(AvatarResources.list[13]),
             lastMessage = "Что там по задачам? Мне кажется, что ты уже очень сильно затянул. Пора отдавать"

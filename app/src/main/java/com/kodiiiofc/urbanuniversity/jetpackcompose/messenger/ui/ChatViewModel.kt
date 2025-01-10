@@ -4,12 +4,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.model.MessageModel
 import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.repository.MessagingRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.util.UUID
 import javax.inject.Inject
 
+@HiltViewModel
 class ChatViewModel
 @Inject constructor(private val messagingRepository: MessagingRepository) : ViewModel() {
 

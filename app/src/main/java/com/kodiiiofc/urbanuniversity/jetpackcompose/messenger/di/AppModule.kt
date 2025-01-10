@@ -27,12 +27,12 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideSupabaseClient() : SupabaseClient {
+    fun provideSupabaseClient(): SupabaseClient {
         return createSupabaseClient(
             supabaseUrl = BuildConfig.SUPABASE_URL,
             supabaseKey = BuildConfig.SUPABASE_ANON_KEY
         ) {
-//            install(Postgrest)
+            install(Postgrest)
             install(Auth) {
                 flowType = FlowType.PKCE
                 scheme = "app"
@@ -43,21 +43,15 @@ object AppModule {
         }
     }
 
-//    @Provides
-//    @Singleton
-//    fun provideSupabaseDatabase(client: SupabaseClient) : Postgrest {
-//        return client.postgrest
-//    }
-
     @Provides
     @Singleton
-    fun provideSupabaseAuth(client: SupabaseClient) : Auth {
+    fun provideSupabaseAuth(client: SupabaseClient): Auth {
         return client.auth
     }
 
     @Provides
     @Singleton
-    fun provideSupabaseStorage(client: SupabaseClient) : Storage {
+    fun provideSupabaseStorage(client: SupabaseClient): Storage {
         return client.storage
     }
 

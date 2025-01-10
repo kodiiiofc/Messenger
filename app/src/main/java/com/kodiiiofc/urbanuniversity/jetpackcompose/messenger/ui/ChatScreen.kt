@@ -1,6 +1,7 @@
 package com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.ui
 
 import android.os.Bundle
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,19 +24,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.os.bundleOf
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.BuildConfig
-import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.repository.MessagingRepositoryImpl
+import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.navigation.OTHER_USER_ID
+import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.navigation.USER_ID
 import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.ui.components.ChatBubbleContact
 import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.ui.components.ChatBubbleUser
 import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.ui.components.MessageInputField
-import io.github.jan.supabase.auth.Auth
-import io.github.jan.supabase.auth.FlowType
-import io.github.jan.supabase.createSupabaseClient
-import io.github.jan.supabase.postgrest.Postgrest
-import io.github.jan.supabase.realtime.Realtime
-import io.github.jan.supabase.storage.Storage
 import kotlinx.coroutines.launch
 import java.util.UUID
 
@@ -43,30 +39,15 @@ import java.util.UUID
 fun ChatScreen(
     navController: NavController,
     bundle: Bundle?,
+    viewModel: ChatViewModel = hiltViewModel()
 ) {
 
-    val viewModel: ChatViewModel = ChatViewModel(
-        messagingRepository = MessagingRepositoryImpl(
-            supabaseClient =
-            createSupabaseClient(
-                supabaseUrl = BuildConfig.SUPABASE_URL,
-                supabaseKey = BuildConfig.SUPABASE_ANON_KEY
-            ) {
+    val userId = bundle?.getString(USER_ID)
+    val otherUserId = bundle?.getString(OTHER_USER_ID)
 
-                install(Postgrest)
-                install(Auth) {
-                    flowType = FlowType.PKCE
-                    scheme = "app"
-                    host = "supabase.com"
-                }
-                install(Storage)
-                install(Realtime)
-            }
-        )
-    )
+    Log.d("TAG", "ChatScreen: $userId")
+    Log.d("TAG", "ChatScreen: $otherUserId")
 
-    val userId = bundle?.getString("userId")
-    val receiverId = bundle?.getString("receiverId")
     val coroutineScope = rememberCoroutineScope()
     val messages = viewModel.messages.collectAsState()
 
@@ -74,10 +55,10 @@ fun ChatScreen(
         mutableStateOf("")
     }
 
-    LaunchedEffect(userId, receiverId) {
+    LaunchedEffect(userId, otherUserId) {
         viewModel.onUpdateChat(
             userId = UUID.fromString(userId),
-            otherUserId = UUID.fromString(receiverId)
+            otherUserId = UUID.fromString(otherUserId)
         )
     }
 
@@ -110,12 +91,12 @@ fun ChatScreen(
                     coroutineScope.launch {
                         viewModel.onSendMessage(
                             senderId = UUID.fromString(userId),
-                            receiverId = UUID.fromString(receiverId),
+                            receiverId = UUID.fromString(otherUserId),
                             textMessage = inputText.value
                         )
                         viewModel.onUpdateChat(
                             userId = UUID.fromString(userId),
-                            otherUserId = UUID.fromString(receiverId)
+                            otherUserId = UUID.fromString(otherUserId)
                         )
                         inputText.value = ""
                     }
@@ -135,7 +116,7 @@ fun ChatScreenPreview() {
         navController = rememberNavController(),
         bundleOf(
             "userId" to "8f1d27ee-ef9d-498a-980f-03cce42a1619",
-            "receiverId" to "35b5efb9-2c4c-4aba-ad3b-445ba7ff459f"
+            "otherUserId" to "35b5efb9-2c4c-4aba-ad3b-445ba7ff459f"
         )
     )
 }

@@ -30,11 +30,11 @@ fun ChatListItem(chatListItemModel: ChatListItemModel, onItemClick: () -> Unit) 
     Row(
         modifier = Modifier
             .padding(8.dp, 0.dp)
+            .clickable { onItemClick() }
             .background(MaterialTheme.colorScheme.surfaceContainer)
             .fillMaxWidth()
             .height(88.dp)
             .padding(16.dp, 12.dp)
-            .clickable { onItemClick() }
     ) {
         Image(
             painter = chatListItemModel.avatar ?: painterResource(R.drawable.avatar_empty),

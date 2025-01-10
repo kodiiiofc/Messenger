@@ -34,11 +34,11 @@ fun ContactListItem(contactListItemModel: ContactListItemModel, onItemClick: () 
     Row(
         modifier = Modifier
             .padding(8.dp, 0.dp)
+            .clickable { onItemClick() }
             .background(MaterialTheme.colorScheme.surfaceContainer)
             .fillMaxWidth()
             .height(64.dp)
             .padding(16.dp, 12.dp)
-            .clickable { onItemClick() }
     ) {
         Image(
             painter = contactListItemModel.avatar ?: painterResource(R.drawable.avatar_empty),
