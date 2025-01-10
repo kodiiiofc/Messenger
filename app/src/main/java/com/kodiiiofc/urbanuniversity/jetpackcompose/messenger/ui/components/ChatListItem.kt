@@ -20,7 +20,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.R
-import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.data.AvatarResources
 import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.model.ChatListItemModel
 import java.util.UUID
 
@@ -37,7 +36,7 @@ fun ChatListItem(chatListItemModel: ChatListItemModel, onItemClick: () -> Unit) 
             .padding(16.dp, 12.dp)
     ) {
         Image(
-            painter = chatListItemModel.avatar ?: painterResource(R.drawable.avatar_empty),
+            painter = /* todo chatListItemModel.avatar ?: */painterResource(R.drawable.avatar_empty),
             contentDescription = chatListItemModel.name,
             modifier = Modifier.size(40.dp)
         )
@@ -47,7 +46,7 @@ fun ChatListItem(chatListItemModel: ChatListItemModel, onItemClick: () -> Unit) 
         Column(Modifier.fillMaxWidth()) {
             Text(text = chatListItemModel.name, fontSize = 16.sp, lineHeight = 24.sp)
             Text(
-                text = chatListItemModel.lastMessage,
+                text = chatListItemModel.last_message,
                 maxLines = 2,
                 softWrap = true,
                 fontSize = 14.sp,
@@ -66,9 +65,9 @@ fun ChatListItem(chatListItemModel: ChatListItemModel, onItemClick: () -> Unit) 
 fun ChatListItemPreview() {
 
     val item = ChatListItemModel(
-        userId = UUID.randomUUID(),
-        name = "Vasya Pupkin",
-        avatar = painterResource(AvatarResources.list[16])
+        owner_id = UUID.randomUUID().toString(),
+        user_id = UUID.randomUUID().toString(),
+        name = "Vasya Pupkin"
     )
 
     ChatListItem(item) {}

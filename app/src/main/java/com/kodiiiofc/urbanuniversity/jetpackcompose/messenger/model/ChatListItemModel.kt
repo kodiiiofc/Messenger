@@ -1,11 +1,12 @@
 package com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.model
 
-import androidx.compose.ui.graphics.painter.Painter
-import java.util.UUID
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class ChatListItemModel(
-    val userId: UUID,
+    val owner_id: String,
+    val user_id: String,
     val name: String,
-    val avatar: Painter? = null,
-    val lastMessage: String = "Начните беседу! 👋",
-    )
+    val last_message: String = "Начните беседу! 👋",
+    val avatar: String? = null,
+)

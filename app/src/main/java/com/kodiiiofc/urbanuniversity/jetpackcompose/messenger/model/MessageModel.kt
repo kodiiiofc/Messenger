@@ -13,6 +13,5 @@ data class MessageModel(
     val created_at: String = LocalDateTime.now().toString(),
     val is_read: Boolean = false,
     val message_type: String = "text", // "image", "document"
-    val image_url: String? = null,
     val file_url: String? = null
 )

@@ -1,9 +1,7 @@
 package com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.ui
 
 import android.app.Activity
-import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -34,15 +32,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -50,9 +45,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.R
-import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.data.AvatarResources
 import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.model.ChatListItemModel
-import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.model.ContactListItemModel
+import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.model.UserModel
 import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.model.TabItem
 import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.navigation.Screen
 import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.ui.components.ChatListItem
@@ -64,7 +58,6 @@ import java.util.UUID
 @Composable
 fun ChatListScreen(
     navController: NavController,
-    chatContacts: List<ChatListItemModel>,
     userId: UUID,
     viewModel: ChatListViewModel = hiltViewModel()
 ) {
@@ -148,6 +141,13 @@ fun ChatListScreen(
                     modifier = Modifier.fillMaxSize(),
                 ) {
                     val contacts = viewModel.contacts.collectAsState()
+
+                    val chats = viewModel.chats.collectAsState()
+
+                    LaunchedEffect(viewModel) {
+                        viewModel.onUpdateChatList()
+                    }
+
                     when (index) {
                         1 -> {
                             val searchInput = remember {
@@ -170,11 +170,11 @@ fun ChatListScreen(
                             }
                         }
 
-                        else -> ChatTabContent(chatContacts) {
+                        else -> ChatTabContent(chats.value) {
                             navController.navigate(
                                 Screen.Chat.getChat(
                                     userId = userId,
-                                    otherUserID = UUID.fromString(contacts.value[it].id)
+                                    otherUserID = UUID.fromString(chats.value[it].user_id)
                                 )
                             )
                         }
@@ -229,51 +229,50 @@ private fun TopBar(menuExpanded: MutableState<Boolean>) {
 @Composable
 fun ChatListScreenPreview() {
 
-    val chatContacts = listOf(
-        ChatListItemModel(
-            userId = UUID.randomUUID(),
-            name = "Vasya Pupkin",
-            avatar = painterResource(AvatarResources.list[16]),
-            lastMessage = "Привет, как дела? Есть планы на вечер?"
-        ),
-        ChatListItemModel(
-            userId = UUID.fromString("35b5efb9-2c4c-4aba-ad3b-445ba7ff459f"),
-            name = "Lesha",
-            avatar = painterResource(AvatarResources.list[13]),
-            lastMessage = "Что там по задачам? Мне кажется, что ты уже очень сильно затянул. Пора отдавать"
-        ),
-        ChatListItemModel(
-            userId = UUID.randomUUID(),
-            name = "Ruslan",
-            avatar = painterResource(AvatarResources.list[12])
-        ),
-        ChatListItemModel(
-            userId = UUID.randomUUID(),
-            name = "Petr Perviy",
-            lastMessage = "Я в Европу прорубил окно, а ты чего добился? Ты вообще никто, понял? А я император Российской Империи!"
-        ),
-        ChatListItemModel(
-            userId = UUID.randomUUID(),
-            name = "Ilya V",
-            avatar = painterResource(AvatarResources.list[25]),
-            lastMessage = "Я устал работать в этой компании, надо основывать свою"
-        ),
-        ChatListItemModel(
-            userId = UUID.randomUUID(),
-            name = "Anastasia Sh",
-            avatar = painterResource(AvatarResources.list[7]),
-            lastMessage = "Наша компания это просто кошмар, все время горят сроки, какой-то бред!!! Еще и задачи ставятся хрен пойми как..."
-        ),
-        ChatListItemModel(
-            userId = UUID.randomUUID(),
-            name = "Lyudmila",
-            avatar = painterResource(AvatarResources.list[19])
-        ),
-    )
+//    val chatContacts = listOf(
+//        ChatListItemModel(
+//            userId = UUID.randomUUID(),
+//            name = "Vasya Pupkin",
+//            avatar = painterResource(AvatarResources.list[16]),
+//            lastMessage = "Привет, как дела? Есть планы на вечер?"
+//        ),
+//        ChatListItemModel(
+//            userId = UUID.fromString("35b5efb9-2c4c-4aba-ad3b-445ba7ff459f"),
+//            name = "Lesha",
+//            avatar = painterResource(AvatarResources.list[13]),
+//            lastMessage = "Что там по задачам? Мне кажется, что ты уже очень сильно затянул. Пора отдавать"
+//        ),
+//        ChatListItemModel(
+//            userId = UUID.randomUUID(),
+//            name = "Ruslan",
+//            avatar = painterResource(AvatarResources.list[12])
+//        ),
+//        ChatListItemModel(
+//            userId = UUID.randomUUID(),
+//            name = "Petr Perviy",
+//            lastMessage = "Я в Европу прорубил окно, а ты чего добился? Ты вообще никто, понял? А я император Российской Империи!"
+//        ),
+//        ChatListItemModel(
+//            userId = UUID.randomUUID(),
+//            name = "Ilya V",
+//            avatar = painterResource(AvatarResources.list[25]),
+//            lastMessage = "Я устал работать в этой компании, надо основывать свою"
+//        ),
+//        ChatListItemModel(
+//            userId = UUID.randomUUID(),
+//            name = "Anastasia Sh",
+//            avatar = painterResource(AvatarResources.list[7]),
+//            lastMessage = "Наша компания это просто кошмар, все время горят сроки, какой-то бред!!! Еще и задачи ставятся хрен пойми как..."
+//        ),
+//        ChatListItemModel(
+//            userId = UUID.randomUUID(),
+//            name = "Lyudmila",
+//            avatar = painterResource(AvatarResources.list[19])
+//        ),
+//    )
 
     ChatListScreen(
         rememberNavController(),
-        chatContacts,
         UUID.fromString("8f1d27ee-ef9d-498a-980f-03cce42a1619")
     )
 }
@@ -293,7 +292,7 @@ fun ChatTabContent(contacts: List<ChatListItemModel>, onItemClick: (Int) -> Unit
 }
 
 @Composable
-fun ContactsTabContent(contacts: List<ContactListItemModel>, onItemClick: (Int) -> Unit) {
+fun ContactsTabContent(contacts: List<UserModel>, onItemClick: (Int) -> Unit) {
     LazyColumn(
         modifier = Modifier
     ) {
