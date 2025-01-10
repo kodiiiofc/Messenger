@@ -65,43 +65,6 @@ fun NavGraph(destination: String = Screen.Home.route, bundle: Bundle? = null) {
         ),
     )
 
-
-    val contacts = listOf(
-        ContactListItemModel(
-            userId = UUID.randomUUID(),
-            name = "Vasya Pupkin",
-            avatar = painterResource(AvatarResources.list[16]),
-        ),
-        ContactListItemModel(
-            userId = UUID.fromString("35b5efb9-2c4c-4aba-ad3b-445ba7ff459f"),
-            name = "Lesha",
-            avatar = painterResource(AvatarResources.list[13]),
-        ),
-        ContactListItemModel(
-            userId = UUID.randomUUID(),
-            name = "Ruslan",
-            avatar = painterResource(AvatarResources.list[12])
-        ),
-        ContactListItemModel(
-            userId = UUID.randomUUID(),
-            name = "Petr Perviy",
-        ),
-        ContactListItemModel(
-            userId = UUID.randomUUID(),
-            name = "Ilya V",
-            avatar = painterResource(AvatarResources.list[25]),
-        ),
-        ContactListItemModel(
-            userId = UUID.randomUUID(),
-            name = "Anastasia Sh",
-            avatar = painterResource(AvatarResources.list[7]),
-        ),
-        ContactListItemModel(
-            userId = UUID.randomUUID(),
-            name = "Lyudmila",
-            avatar = painterResource(AvatarResources.list[19])
-        ),
-    )
     val navController = rememberNavController()
 
     NavHost(
@@ -124,7 +87,6 @@ fun NavGraph(destination: String = Screen.Home.route, bundle: Bundle? = null) {
             ChatListScreen(
                 navController,
                 chatContacts,
-                contacts,
                 UUID.fromString(it.arguments?.getString(USER_ID).toString())
             )
         }

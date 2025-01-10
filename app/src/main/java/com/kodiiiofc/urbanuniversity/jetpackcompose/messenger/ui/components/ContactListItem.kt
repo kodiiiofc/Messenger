@@ -41,7 +41,7 @@ fun ContactListItem(contactListItemModel: ContactListItemModel, onItemClick: () 
             .padding(16.dp, 12.dp)
     ) {
         Image(
-            painter = contactListItemModel.avatar ?: painterResource(R.drawable.avatar_empty),
+            painter = /*contactListItemModel.avatar ?: */painterResource(R.drawable.avatar_empty),
             contentDescription = contactListItemModel.name,
             modifier = Modifier.size(40.dp)
         )
@@ -54,18 +54,18 @@ fun ContactListItem(contactListItemModel: ContactListItemModel, onItemClick: () 
     }
 }
 
-
-@Preview(
-    showBackground = true,
-)
-@Composable
-fun ContactListItemPreview() {
-
-    val item = ContactListItemModel(
-        userId = UUID.randomUUID(),
-        name = "Vasya Pupkin",
-        avatar = painterResource(AvatarResources.list[16])
-    )
-
-    ContactListItem(item) {}
-}
+//
+//@Preview(
+//    showBackground = true,
+//)
+//@Composable
+//fun ContactListItemPreview() {
+//
+//    val item = ContactListItemModel(
+//        userId = UUID.randomUUID(),
+//        name = "Vasya Pupkin",
+//        avatar = painterResource(AvatarResources.list[16])
+//    )
+//
+//    ContactListItem(item) {}
+//}
