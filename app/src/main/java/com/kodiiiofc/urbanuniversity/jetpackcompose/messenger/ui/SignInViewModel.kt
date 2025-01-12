@@ -1,5 +1,6 @@
 package com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.ui
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.repository.AuthenticationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,10 +27,11 @@ class SignInViewModel @Inject constructor(
         _password.value = password
     }
 
-    suspend fun onSignIn(): Boolean {
+    suspend fun onSignIn(context: Context): Boolean {
         return authenticationRepository.signIn(
             email = _email.value,
-            password = _password.value
+            password = _password.value,
+            context = context
         )
     }
 

@@ -25,7 +25,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             MessengerTheme {
 
-                NavGraph(Screen.ChatList.getChatList(UUID.fromString("8f1d27ee-ef9d-498a-980f-03cce42a1619")))
+                NavGraph()
 
             }
         }

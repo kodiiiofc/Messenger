@@ -25,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -43,8 +44,9 @@ fun SignInScreen(
     viewModel: SignInViewModel = hiltViewModel()
 ) {
 
+    val context = LocalContext.current
+
     val coroutineScope = rememberCoroutineScope()
-    val snackbarHostState = remember { SnackbarHostState() }
 
     val email = viewModel.email.collectAsState(initial = "")
     val password = viewModel.password.collectAsState()
@@ -109,14 +111,13 @@ fun SignInScreen(
                     onClick = {
                         localSoftwareKeyboardController?.hide()
                         coroutineScope.launch {
-                            if (viewModel.onSignIn()) {
+                            if (viewModel.onSignIn(context = context)) {
 
                                 Toast.makeText(
                                     navController.context,
                                     "Успешный вход",
                                     Toast.LENGTH_LONG
                                 ).show()
-
 
                                 navController.navigate(
                                     route = Screen.ChatList.getChatList(

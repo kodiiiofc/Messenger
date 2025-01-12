@@ -1,5 +1,6 @@
 [versions]
 agp = "8.7.3"
+coilComposeVersion = "2.4.0"
 hiltAndroid = "2.54"
 hiltNavigationCompose = "1.2.0"
 kotlin = "2.0.0"
@@ -20,6 +21,7 @@ supabaseKt = "3.0.3"
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+coil-kt-coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilComposeVersion" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt-version" }
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt-version" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }

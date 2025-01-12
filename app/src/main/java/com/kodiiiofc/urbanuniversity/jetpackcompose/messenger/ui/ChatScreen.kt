@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -39,7 +38,6 @@ import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.ui.components.Chat
 import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.ui.components.MessageInputField
 import kotlinx.coroutines.launch
 import java.util.UUID
-import kotlin.reflect.jvm.internal.impl.descriptors.Visibilities.Local
 
 @Composable
 fun ChatScreen(
