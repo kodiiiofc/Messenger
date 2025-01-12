@@ -2,6 +2,7 @@ package com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.ui
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,8 +10,12 @@ import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.model.MessageModel
 import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.repository.MessagingRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.last
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -25,7 +30,12 @@ class ChatViewModel
     private val _messages = MutableStateFlow<List<MessageModel>>(emptyList())
     val messages: StateFlow<List<MessageModel>> get() = _messages
 
-    suspend fun onSendMessage(senderId: UUID, receiverId: UUID, textMessage: String, file: File? = null): Boolean {
+    suspend fun onSendMessage(
+        senderId: UUID,
+        receiverId: UUID,
+        textMessage: String,
+        file: File? = null
+    ): Boolean {
 
         var message = MessageModel(
             sender_id = senderId.toString(),
@@ -39,8 +49,18 @@ class ChatViewModel
     }
 
     fun onUpdateChat(userId: UUID, otherUserId: UUID) {
+
+
+//        viewModelScope.launch {
+//            _messages.value = messagingRepository.getMessages(userId, otherUserId)
+//        }
+    }
+
+    fun onSubscribeToMessages() {
         viewModelScope.launch {
-            _messages.value = messagingRepository.getMessages(userId, otherUserId)
+            messagingRepository.subscribeToMessages().collect {
+                _messages.value = it
+            }
         }
     }
 

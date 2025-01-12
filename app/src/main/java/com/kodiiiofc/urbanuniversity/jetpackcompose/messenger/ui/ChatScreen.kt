@@ -71,6 +71,10 @@ fun ChatScreen(
         fileUri.value = uri
     }
 
+    LaunchedEffect(viewModel) {
+        viewModel.onSubscribeToMessages()
+    }
+
     LaunchedEffect(userId, otherUserId) {
         viewModel.onUpdateChat(
             userId = UUID.fromString(userId),
@@ -89,7 +93,10 @@ fun ChatScreen(
                 Modifier.weight(1f),
                 verticalArrangement = Arrangement.Bottom
             ) {
-                itemsIndexed(messages.value) { index, message ->
+                itemsIndexed(messages.value.filter { message ->
+                    (message.sender_id == userId && message.receiver_id == otherUserId) ||
+                            (message.receiver_id == userId && message.sender_id == otherUserId)
+                }) { index, message ->
                     Spacer(Modifier.height(2.dp))
                     if (message.sender_id == userId) {
                         Box(
@@ -107,7 +114,10 @@ fun ChatScreen(
                 inputText = inputText,
                 onTrailingIconClick = {
                     coroutineScope.launch {
-                        val file = if (fileUri.value != null) viewModel.createFileFromUri(context, fileUri.value!!) else null
+                        val file = if (fileUri.value != null) viewModel.createFileFromUri(
+                            context,
+                            fileUri.value!!
+                        ) else null
 
                         viewModel.onSendMessage(
                             senderId = UUID.fromString(userId),

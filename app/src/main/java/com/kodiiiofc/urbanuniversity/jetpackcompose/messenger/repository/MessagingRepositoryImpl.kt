@@ -1,14 +1,16 @@
 package com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.repository
 
 import android.util.Log
-import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.model.ChatListItemModel
 import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.model.MessageModel
 import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.model.UserModel
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.Order
+import io.github.jan.supabase.realtime.channel
+import io.github.jan.supabase.realtime.postgresListDataFlow
 import io.github.jan.supabase.storage.storage
 import io.github.jan.supabase.storage.upload
+import kotlinx.coroutines.flow.Flow
 import java.io.File
 import java.util.UUID
 import javax.inject.Inject
@@ -52,70 +54,23 @@ class MessagingRepositoryImpl
             }
             .decodeList<MessageModel>()
 
-        if (messages.isNotEmpty()) updateChatList(messages.last())
-
         return messages
     }
 
-    override suspend fun updateChatList(
-        message: MessageModel
-    ): Boolean {
-        return try {
-            val user = supabaseClient
-                .from("public", "users")
-                .select { filter { UserModel::id eq message.sender_id } }
-                .decodeList<UserModel>()
-                .first()
+    override suspend fun subscribeToMessages(): Flow<List<MessageModel>> {
 
-            val otherUser = supabaseClient
-                .from("public", "users")
-                .select { filter { UserModel::id eq message.receiver_id } }
-                .decodeList<UserModel>()
-                .first()
+        val channel = supabaseClient.channel("messages_channel")
 
-            val chatListItemModel = ChatListItemModel(
-                owner_id = user.id,
-                user_id = otherUser.id,
-                name = otherUser.name,
-                last_message = message.message,
-                avatar = otherUser.avatar
-            )
+        val flow = channel.postgresListDataFlow(
+            schema = "public",
+            table = "messages",
+            primaryKey = MessageModel::id,
+            filter = null
+        )
 
-            val isNewChat = supabaseClient
-                .from("public", "chats")
-                .select {
-                    filter {
-                        and {
-                            ChatListItemModel::owner_id eq message.sender_id
-                            ChatListItemModel::user_id eq message.receiver_id
-                            ChatListItemModel::last_message neq ""
-                        }
-                    }
-                }
-                .decodeList<ChatListItemModel>()
-                .isEmpty()
+        channel.subscribe()
 
-            if (isNewChat) {
-                supabaseClient
-                    .from("public", "chats")
-                    .insert(chatListItemModel)
-            } else {
-                supabaseClient
-                    .from("public", "chats")
-                    .update(chatListItemModel) {
-                        filter {
-                            and {
-                                ChatListItemModel::owner_id eq message.sender_id
-                                ChatListItemModel::user_id eq message.receiver_id
-                            }
-                        }
-                    }
-            }
-            true
-        } catch (e: Exception) {
-            Log.e("MESSAGING", "updateChatList: " + e.message)
-            false
-        }
+        return flow
     }
 
     override suspend fun uploadImage(message: MessageModel, file: File): MessageModel {
@@ -138,4 +93,35 @@ class MessagingRepositoryImpl
             file_url = bucket.publicUrl(filePath)
         )
     }
+
+    override suspend fun updateContactList(searchInput: String): List<UserModel> {
+        return supabaseClient
+            .from("public", "users")
+            .select() {
+                filter {
+                    or {
+                        UserModel::email ilike "%$searchInput%"
+                        UserModel::name ilike "%$searchInput%"
+                    }
+                }
+            }
+            .decodeList<UserModel>()
+    }
+
+    override suspend fun getUserById(userId: String): UserModel {
+
+        var currentUser = usersCache.find { user -> (user.id == userId) }
+        if (currentUser == null) {
+            currentUser = supabaseClient
+                .from("public", "users")
+                .select {
+                    filter { UserModel::id eq userId }
+                }.decodeList<UserModel>().first()
+            usersCache.add(currentUser)
+        }
+        return currentUser
+
+    }
+
+    override val usersCache: MutableList<UserModel> = mutableListOf()
 }

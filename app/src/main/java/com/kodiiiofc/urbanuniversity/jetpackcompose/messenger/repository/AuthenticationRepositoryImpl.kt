@@ -6,6 +6,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.OtpType
 import io.github.jan.supabase.auth.providers.builtin.Email
+import java.util.UUID
 import javax.inject.Inject
 
 class AuthenticationRepositoryImpl @Inject constructor(
@@ -43,14 +44,20 @@ class AuthenticationRepositoryImpl @Inject constructor(
         editor.apply()
     }
 
-    override suspend fun resumeSession(context: Context) : String? {
+    override suspend fun resumeSession(context: Context): String? {
         val sharedPreferences = context.getSharedPreferences("Auth", Context.MODE_PRIVATE)
         val accessToken = sharedPreferences.getString("access_token", null)
         val refreshToken = sharedPreferences.getString("refresh_token", null)
-        return if (accessToken != null && refreshToken != null) {
-            auth.importAuthToken(accessToken, refreshToken)
-            auth.currentSessionOrNull()!!.user!!.id
-        } else null
+        return try {
+            if (accessToken != null && refreshToken != null) {
+                auth.importAuthToken(accessToken, refreshToken)
+                auth.currentSessionOrNull()!!.user!!.id
+            } else null
+        } catch (e: Exception) {
+            Log.e("TAG", "resumeSession error: " + e.message, )
+            auth.signOut()
+            null
+        }
     }
 
     override suspend fun signUp(email: String, password: String): Boolean {

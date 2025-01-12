@@ -16,16 +16,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.R
-import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.model.ChatListItemModel
-import java.util.UUID
+import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.model.ChatListItem
 
 
 @Composable
-fun ChatListItem(chatListItemModel: ChatListItemModel, onItemClick: () -> Unit) {
+fun ChatListItem(chatListItem: ChatListItem, onItemClick: () -> Unit) {
     Row(
         modifier = Modifier
             .padding(8.dp, 0.dp)
@@ -37,16 +35,16 @@ fun ChatListItem(chatListItemModel: ChatListItemModel, onItemClick: () -> Unit) 
     ) {
         Image(
             painter = /* todo chatListItemModel.avatar ?: */painterResource(R.drawable.avatar_empty),
-            contentDescription = chatListItemModel.name,
+            contentDescription = chatListItem.otherUser.name,
             modifier = Modifier.size(40.dp)
         )
 
         Spacer(Modifier.size(16.dp))
 
         Column(Modifier.fillMaxWidth()) {
-            Text(text = chatListItemModel.name, fontSize = 16.sp, lineHeight = 24.sp)
+            Text(text = chatListItem.otherUser.name, fontSize = 16.sp, lineHeight = 24.sp)
             Text(
-                text = chatListItemModel.last_message,
+                text = chatListItem.lastMessage.message,
                 maxLines = 2,
                 softWrap = true,
                 fontSize = 14.sp,
@@ -55,20 +53,4 @@ fun ChatListItem(chatListItemModel: ChatListItemModel, onItemClick: () -> Unit) 
             )
         }
     }
-}
-
-
-@Preview(
-    showBackground = true,
-)
-@Composable
-fun ChatListItemPreview() {
-
-    val item = ChatListItemModel(
-        owner_id = UUID.randomUUID().toString(),
-        user_id = UUID.randomUUID().toString(),
-        name = "Vasya Pupkin"
-    )
-
-    ChatListItem(item) {}
 }

@@ -2,14 +2,11 @@ package com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.navigation
 
 import android.os.Bundle
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.data.AvatarResources
-import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.model.ChatListItemModel
 import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.ui.ChatListScreen
 import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.ui.ChatScreen
 import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.ui.HomeScreen
