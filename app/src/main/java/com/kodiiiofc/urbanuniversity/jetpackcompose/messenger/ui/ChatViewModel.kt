@@ -6,18 +6,25 @@ import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.model.MessageModel
 import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.repository.MessagingRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.github.jan.supabase.realtime.PostgresAction
+import io.github.jan.supabase.realtime.channel
+import io.github.jan.supabase.realtime.postgresChangeFlow
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.Json
 import java.io.File
 import java.io.InputStream
 import java.util.UUID
@@ -27,8 +34,7 @@ import javax.inject.Inject
 class ChatViewModel
 @Inject constructor(private val messagingRepository: MessagingRepository) : ViewModel() {
 
-    private val _messages = MutableStateFlow<List<MessageModel>>(emptyList())
-    val messages: StateFlow<List<MessageModel>> get() = _messages
+    val messages: StateFlow<List<MessageModel>> get() = messagingRepository.messages
 
     suspend fun onSendMessage(
         senderId: UUID,
@@ -48,20 +54,13 @@ class ChatViewModel
         return messagingRepository.sendMessage(message)
     }
 
-    fun onUpdateChat(userId: UUID, otherUserId: UUID) {
-
-
-//        viewModelScope.launch {
-//            _messages.value = messagingRepository.getMessages(userId, otherUserId)
-//        }
+    fun realtimeDb() = viewModelScope.launch {
+        messagingRepository.getMessages()
+        messagingRepository.realtimeDB(this)
     }
 
-    fun onSubscribeToMessages() {
-        viewModelScope.launch {
-            messagingRepository.subscribeToMessages().collect {
-                _messages.value = it
-            }
-        }
+    fun getMessages() = viewModelScope.launch {
+        messagingRepository.getMessages()
     }
 
     suspend fun createFileFromUri(context: Context, uri: Uri): File? = withContext(Dispatchers.IO) {

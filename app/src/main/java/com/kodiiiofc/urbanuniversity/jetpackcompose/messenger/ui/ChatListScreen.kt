@@ -1,6 +1,7 @@
 package com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.ui
 
 import android.app.Activity
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -31,6 +32,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -59,6 +61,7 @@ fun ChatListScreen(
     userId: UUID,
     viewModel: ChatListViewModel = hiltViewModel()
 ) {
+    viewModel.userId = userId.toString()
 
     val menuExpanded = remember {
         mutableStateOf(false)
@@ -98,12 +101,13 @@ fun ChatListScreen(
     }
 
     val contacts = viewModel.contacts.collectAsState()
-
     val chats = viewModel.chats.collectAsState()
+    val messages by viewModel.messages.collectAsState()
+    Log.d("TAG", "ChatListScreen: $messages")
+    Log.d("TAG", "ChatListScreen: $chats")
 
     LaunchedEffect(viewModel) {
-        viewModel.onSubscribeToMessages()
-        viewModel.onUpdateChatList(userId.toString())
+        viewModel.realtimeDb()
     }
 
     Scaffold(

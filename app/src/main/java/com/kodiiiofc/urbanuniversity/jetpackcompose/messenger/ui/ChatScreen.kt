@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -57,6 +58,12 @@ fun ChatScreen(
     val coroutineScope = rememberCoroutineScope()
     val messages = viewModel.messages.collectAsState()
 
+    LaunchedEffect(Unit) {
+        viewModel.realtimeDb()
+    }
+
+    Log.d("TAG", "ChatScreen: $messages")
+
     val inputText = remember {
         mutableStateOf("")
     }
@@ -71,15 +78,12 @@ fun ChatScreen(
         fileUri.value = uri
     }
 
-    LaunchedEffect(viewModel) {
-        viewModel.onSubscribeToMessages()
-    }
 
-    LaunchedEffect(userId, otherUserId) {
-        viewModel.onUpdateChat(
-            userId = UUID.fromString(userId),
-            otherUserId = UUID.fromString(otherUserId)
-        )
+    val listState = rememberLazyListState()
+
+    LaunchedEffect(messages.value) {
+        if (messages.value.isNotEmpty())
+        listState.scrollToItem(messages.value.size - 1)
     }
 
     Scaffold { innerPadding ->
@@ -90,7 +94,8 @@ fun ChatScreen(
                 .padding(4.dp)
         ) {
             LazyColumn(
-                Modifier.weight(1f),
+                state = listState,
+                modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.Bottom
             ) {
                 itemsIndexed(messages.value.filter { message ->
@@ -124,10 +129,6 @@ fun ChatScreen(
                             receiverId = UUID.fromString(otherUserId),
                             textMessage = inputText.value,
                             file = file
-                        )
-                        viewModel.onUpdateChat(
-                            userId = UUID.fromString(userId),
-                            otherUserId = UUID.fromString(otherUserId)
                         )
                         inputText.value = ""
                     }

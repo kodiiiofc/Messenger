@@ -6,27 +6,32 @@ import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.model.UserModel
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.Order
+import io.github.jan.supabase.realtime.PostgresAction
 import io.github.jan.supabase.realtime.channel
-import io.github.jan.supabase.realtime.postgresListDataFlow
+import io.github.jan.supabase.realtime.postgresChangeFlow
 import io.github.jan.supabase.storage.storage
 import io.github.jan.supabase.storage.upload
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.serialization.json.Json
 import java.io.File
-import java.util.UUID
 import javax.inject.Inject
 
 class MessagingRepositoryImpl
 @Inject constructor(private val supabaseClient: SupabaseClient) : MessagingRepository {
+
+    private val _messages = MutableStateFlow<List<MessageModel>>(emptyList())
+    override val messages: StateFlow<List<MessageModel>> get() = _messages
 
     override suspend fun sendMessage(message: MessageModel): Boolean {
         return try {
             supabaseClient
                 .from("public", "messages")
                 .insert(message)
-            getMessages(
-                UUID.fromString(message.sender_id),
-                UUID.fromString(message.receiver_id)
-            )
             true
         } catch (e: Exception) {
             Log.e("MESSAGING", "sendMessage: " + e.message)
@@ -34,43 +39,67 @@ class MessagingRepositoryImpl
         }
     }
 
-    override suspend fun getMessages(userId: UUID, otherUserId: UUID): List<MessageModel> {
-        val messages = supabaseClient
+    override suspend fun getMessages() {
+        _messages.value = supabaseClient
             .from("public", "messages")
             .select {
-                filter {
-                    or {
-                        and {
-                            MessageModel::sender_id eq userId
-                            MessageModel::receiver_id eq otherUserId
-                        }
-                        and {
-                            MessageModel::sender_id eq otherUserId
-                            MessageModel::receiver_id eq userId
-                        }
-                    }
-                }
                 order(column = "created_at", order = Order.ASCENDING)
             }
             .decodeList<MessageModel>()
-
-        return messages
     }
 
-    override suspend fun subscribeToMessages(): Flow<List<MessageModel>> {
+    override suspend fun realtimeDB(coroutineScope: CoroutineScope) {
+        try {
+            val channel = supabaseClient.channel("test")
 
-        val channel = supabaseClient.channel("messages_channel")
+            val dataFlow = channel.postgresChangeFlow<PostgresAction>(
+                schema = "public"
+            )
 
-        val flow = channel.postgresListDataFlow(
-            schema = "public",
-            table = "messages",
-            primaryKey = MessageModel::id,
-            filter = null
-        )
+            dataFlow.onEach {
+                when (it) {
+                    is PostgresAction.Delete -> {
+                        val stringifiedData = it.oldRecord.toString()
+                        val data = Json.decodeFromString<MessageModel>(stringifiedData)
+                        _messages.value = _messages.value.filter { message ->
+                            message.id != data.id
+                        }
+                        Log.d("TAG", "realtimeDb: data deleted ${messages.value}")
+                    }
 
-        channel.subscribe()
+                    is PostgresAction.Insert -> {
+                        val stringifiedData = it.record.toString()
+                        val data = Json.decodeFromString<MessageModel>(stringifiedData)
+                        _messages.value = _messages.value.map { message ->
+                            if (message.id == data.id) {
+                                data
+                            } else message
+                        }
+                        Log.d("TAG", "realtimeDb: data inserted  ${messages.value}")
+                    }
 
-        return flow
+                    is PostgresAction.Select -> {
+                        Log.d("TAG", "realtimeDb: data selected  ${messages.value}")
+                    }
+
+                    is PostgresAction.Update -> {
+                        val stringifiedData = it.record.toString()
+                        val data = Json.decodeFromString<MessageModel>(stringifiedData)
+                        Log.d("TAG", "realtimeDb: data updated $data")
+                        _messages.value = _messages.value.map { message ->
+                            if (message.id == data.id) {
+                                data
+                            } else message
+                        }
+                    }
+                }
+            }.launchIn(coroutineScope)
+
+            channel.subscribe()
+
+        } catch (e: Exception) {
+            Log.e("TAG", "subscribeToData error: " + e.message)
+        }
     }
 
     override suspend fun uploadImage(message: MessageModel, file: File): MessageModel {
