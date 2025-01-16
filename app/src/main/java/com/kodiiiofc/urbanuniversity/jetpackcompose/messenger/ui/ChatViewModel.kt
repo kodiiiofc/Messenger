@@ -54,11 +54,6 @@ class ChatViewModel
         return messagingRepository.sendMessage(message)
     }
 
-    fun realtimeDb() = viewModelScope.launch {
-        messagingRepository.getMessages()
-        messagingRepository.realtimeDB(this)
-    }
-
     fun getMessages() = viewModelScope.launch {
         messagingRepository.getMessages()
     }

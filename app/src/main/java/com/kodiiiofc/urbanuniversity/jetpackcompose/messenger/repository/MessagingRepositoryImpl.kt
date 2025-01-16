@@ -1,22 +1,31 @@
 package com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.repository
 
 import android.util.Log
+import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.model.ChatListItem
 import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.model.MessageModel
 import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.model.UserModel
 import io.github.jan.supabase.SupabaseClient
+import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.Order
 import io.github.jan.supabase.realtime.PostgresAction
+import io.github.jan.supabase.realtime.RealtimeChannel
 import io.github.jan.supabase.realtime.channel
 import io.github.jan.supabase.realtime.postgresChangeFlow
 import io.github.jan.supabase.storage.storage
 import io.github.jan.supabase.storage.upload
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import java.io.File
 import javax.inject.Inject
@@ -24,8 +33,38 @@ import javax.inject.Inject
 class MessagingRepositoryImpl
 @Inject constructor(private val supabaseClient: SupabaseClient) : MessagingRepository {
 
+    private var realtimeChannel: RealtimeChannel? = null
+
     private val _messages = MutableStateFlow<List<MessageModel>>(emptyList())
     override val messages: StateFlow<List<MessageModel>> get() = _messages
+
+    private var userId = supabaseClient.auth.currentSessionOrNull()?.user?.id
+
+    private val repositoryScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+
+    override val chats: StateFlow<List<ChatListItem>> =
+        combine(_messages) { messages ->
+            updateUserId()
+            messages[0].map { message ->
+                ChatListItem(
+                    user = getUserById(userId!!),
+                    otherUser = getUserById(
+                        if (message.sender_id != userId)
+                            message.sender_id
+                        else message.receiver_id
+                    ),
+                    lastMessage = message
+                )
+            }.sortedByDescending { it.lastMessage.created_at }.distinctBy {
+                it.otherUser
+            }.also { Log.d("TAG", "updatingChats : $it") }
+        }.catch { e ->
+            Log.e("TAG", "Error in chats flow: $e")
+        }.stateIn(repositoryScope, SharingStarted.Lazily, emptyList())
+
+    private fun updateUserId() {
+        userId = supabaseClient.auth.currentSessionOrNull()?.user?.id
+    }
 
     override suspend fun sendMessage(message: MessageModel): Boolean {
         return try {
@@ -48,11 +87,14 @@ class MessagingRepositoryImpl
             .decodeList<MessageModel>()
     }
 
-    override suspend fun realtimeDB(coroutineScope: CoroutineScope) {
-        try {
-            val channel = supabaseClient.channel("test")
+    private fun parseOldRecord(stringifiedData: String): String {
+        return stringifiedData.drop(7).dropLast(2)
+    }
 
-            val dataFlow = channel.postgresChangeFlow<PostgresAction>(
+    override fun realtimeDB() {
+        repositoryScope.launch {
+            realtimeChannel = supabaseClient.channel("test")
+            val dataFlow = realtimeChannel!!.postgresChangeFlow<PostgresAction>(
                 schema = "public"
             )
 
@@ -60,22 +102,21 @@ class MessagingRepositoryImpl
                 when (it) {
                     is PostgresAction.Delete -> {
                         val stringifiedData = it.oldRecord.toString()
-                        val data = Json.decodeFromString<MessageModel>(stringifiedData)
+                        val deletedMessageId = parseOldRecord(stringifiedData)
                         _messages.value = _messages.value.filter { message ->
-                            message.id != data.id
+                            message.id != deletedMessageId
                         }
+                        Log.d("TAG", "realtimeDb: data deleted ${stringifiedData}")
+                        Log.d("TAG", "realtimeDb: data deleted ${deletedMessageId}")
                         Log.d("TAG", "realtimeDb: data deleted ${messages.value}")
+
                     }
 
                     is PostgresAction.Insert -> {
                         val stringifiedData = it.record.toString()
                         val data = Json.decodeFromString<MessageModel>(stringifiedData)
-                        _messages.value = _messages.value.map { message ->
-                            if (message.id == data.id) {
-                                data
-                            } else message
-                        }
-                        Log.d("TAG", "realtimeDb: data inserted  ${messages.value}")
+                        _messages.value = _messages.value.toMutableList().apply { add(data) }
+                        Log.d("TAG", "realtimeDb: data inserted  ${data}")
                     }
 
                     is PostgresAction.Select -> {
@@ -93,12 +134,9 @@ class MessagingRepositoryImpl
                         }
                     }
                 }
-            }.launchIn(coroutineScope)
+            }.launchIn(repositoryScope)
 
-            channel.subscribe()
-
-        } catch (e: Exception) {
-            Log.e("TAG", "subscribeToData error: " + e.message)
+            realtimeChannel!!.subscribe()
         }
     }
 

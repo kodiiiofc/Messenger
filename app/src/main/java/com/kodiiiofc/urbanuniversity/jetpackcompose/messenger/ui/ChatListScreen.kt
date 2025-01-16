@@ -31,6 +31,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -52,6 +53,7 @@ import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.navigation.Screen
 import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.ui.components.ChatListItem
 import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.ui.components.ContactListItem
 import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.ui.components.UserSearch
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.util.UUID
 
@@ -102,12 +104,9 @@ fun ChatListScreen(
 
     val contacts = viewModel.contacts.collectAsState()
     val chats = viewModel.chats.collectAsState()
-    val messages by viewModel.messages.collectAsState()
-    Log.d("TAG", "ChatListScreen: $messages")
-    Log.d("TAG", "ChatListScreen: $chats")
 
-    LaunchedEffect(viewModel) {
-        viewModel.realtimeDb()
+    LaunchedEffect(chats) {
+        Log.d("TAG", "Сработал LaunchedEffect при обновлении chats: ${chats.value}")
     }
 
     Scaffold(
@@ -174,7 +173,7 @@ fun ChatListScreen(
                             }
                         }
 
-                        else -> ChatTabContent(chats.value) {
+                        else -> ChatTabContent(chats) {
                             navController.navigate(
                                 Screen.Chat.getChat(
                                     userId = userId,
@@ -230,11 +229,11 @@ private fun TopBar(menuExpanded: MutableState<Boolean>) {
 }
 
 @Composable
-fun ChatTabContent(contacts: List<ChatListItem>, onItemClick: (Int) -> Unit) {
+fun ChatTabContent(contacts: State<List<ChatListItem>>, onItemClick: (Int) -> Unit) {
     LazyColumn(
         modifier = Modifier
     ) {
-        itemsIndexed(contacts) { index, item ->
+        itemsIndexed(contacts.value) { index, item ->
             ChatListItem(item) {
                 onItemClick(index)
             }

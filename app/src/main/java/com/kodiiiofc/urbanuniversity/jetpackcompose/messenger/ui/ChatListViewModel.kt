@@ -10,6 +10,7 @@ import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.model.UserModel
 import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.repository.MessagingRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -26,30 +27,12 @@ import kotlin.math.log
 class ChatListViewModel
 @Inject constructor(private val messagingRepository: MessagingRepository) : ViewModel() {
 
-    val messages: StateFlow<List<MessageModel>> get() = messagingRepository.messages
-
     var userId: String? = null
 
     private val _contacts = MutableStateFlow<List<UserModel>>(emptyList())
     val contacts: StateFlow<List<UserModel>> get() = _contacts
 
-    val chats: StateFlow<List<ChatListItem>> = messages.map { messages ->
-        messages.map { message ->
-            ChatListItem(
-                user = messagingRepository.getUserById(userId!!),
-                otherUser = messagingRepository.getUserById(
-                    if (message.sender_id != userId)
-                        message.sender_id
-                    else message.receiver_id
-                ),
-                lastMessage = message
-            )
-        }.reversed().distinctBy { it.otherUser }
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
-        initialValue = emptyList()
-    )
+    val chats: StateFlow<List<ChatListItem>> = messagingRepository.chats
 
     fun onUpdateContactsList(searchInput: String): Boolean {
         return try {
@@ -63,9 +46,8 @@ class ChatListViewModel
         }
     }
 
-    fun realtimeDb() = viewModelScope.launch {
+    fun getMessages() = viewModelScope.launch {
         messagingRepository.getMessages()
-        messagingRepository.realtimeDB(this)
     }
 
 }

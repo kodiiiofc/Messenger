@@ -20,6 +20,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -50,19 +51,14 @@ fun ChatScreen(
     val userId = bundle?.getString(USER_ID)
     val otherUserId = bundle?.getString(OTHER_USER_ID)
 
-    Log.d("TAG", "ChatScreen: $userId")
-    Log.d("TAG", "ChatScreen: $otherUserId")
-
     val context = LocalContext.current
 
     val coroutineScope = rememberCoroutineScope()
-    val messages = viewModel.messages.collectAsState()
+    val messages by viewModel.messages.collectAsState()
 
     LaunchedEffect(Unit) {
-        viewModel.realtimeDb()
+        viewModel.getMessages()
     }
-
-    Log.d("TAG", "ChatScreen: $messages")
 
     val inputText = remember {
         mutableStateOf("")
@@ -81,9 +77,9 @@ fun ChatScreen(
 
     val listState = rememberLazyListState()
 
-    LaunchedEffect(messages.value) {
-        if (messages.value.isNotEmpty())
-        listState.scrollToItem(messages.value.size - 1)
+    LaunchedEffect(messages) {
+        if (messages.isNotEmpty())
+            listState.scrollToItem(messages.size - 1)
     }
 
     Scaffold { innerPadding ->
@@ -98,7 +94,7 @@ fun ChatScreen(
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.Bottom
             ) {
-                itemsIndexed(messages.value.filter { message ->
+                itemsIndexed(messages.filter { message ->
                     (message.sender_id == userId && message.receiver_id == otherUserId) ||
                             (message.receiver_id == userId && message.sender_id == otherUserId)
                 }) { index, message ->
