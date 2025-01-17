@@ -16,6 +16,8 @@ ksp-version = "2.0.0-1.0.24"
 hilt-version = "2.54"
 navigationCompose = "2.8.5"
 supabaseKt = "3.0.3"
+googleGmsGoogleServices = "4.4.2"
+firebaseMessaging = "24.1.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -46,6 +48,7 @@ supabase-postgrest = { module = "io.github.jan-tennert.supabase:postgrest-kt-and
 supabase-storage = { module = "io.github.jan-tennert.supabase:storage-kt", version.ref = "supabaseKt" }
 supabase-realtime = { module = "io.github.jan-tennert.supabase:realtime-kt", version.ref = "supabaseKt" }
 androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "navigationCompose" }
+firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging", version.ref = "firebaseMessaging" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -53,4 +56,5 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 ksp = {id = "com.google.devtools.ksp", version.ref = "ksp-version"}
 hilt = {id = "com.google.dagger.hilt.android", version.ref = "hilt-version"}
+google-gms-google-services = { id = "com.google.gms.google-services", version.ref = "googleGmsGoogleServices" }
 

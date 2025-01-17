@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.kodiiiofc.urbanuniversity.jetpackcompose.messenger" />
+                  <option name="mobileSdkAppId" value="1:308145784376:android:e248f9fe006a544ba908cd" />
+                  <option name="projectId" value="kodiiiofc-messenger" />
+                  <option name="projectNumber" value="308145784376" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
