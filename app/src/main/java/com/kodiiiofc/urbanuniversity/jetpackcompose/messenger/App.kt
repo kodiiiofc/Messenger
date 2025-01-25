@@ -16,25 +16,4 @@ class App : Application() {
 
     @Inject
     lateinit var supabaseClient: SupabaseClient
-
-    @Inject
-    lateinit var messagingRepository : MessagingRepository
-
-    @Inject
-    lateinit var fcmTokenProvider : FcmTokenProvider
-
-    override fun onCreate() {
-        super.onCreate()
-
-        CoroutineScope(Dispatchers.IO).launch {
-            val token = fcmTokenProvider.getToken()
-            Log.d("FCM", "fcmTokenProvider.getToken(): $token ")
-        }
-
-        messagingRepository.realtimeDB()
-
-        CoroutineScope(Dispatchers.IO).launch {
-            messagingRepository.getMessages()
-        }
-    }
 }

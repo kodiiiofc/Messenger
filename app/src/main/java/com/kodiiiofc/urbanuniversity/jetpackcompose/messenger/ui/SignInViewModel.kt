@@ -1,16 +1,22 @@
 package com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.ui
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.google.firebase.messaging.FirebaseMessaging
 import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.repository.AuthenticationRepository
+import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.services.FcmTokenProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SignInViewModel @Inject constructor(
-    private val authenticationRepository: AuthenticationRepository
+    private val authenticationRepository: AuthenticationRepository,
+    private val fcmTokenProvider: FcmTokenProvider
 ) : ViewModel() {
 
     private val _email = MutableStateFlow("")
@@ -28,11 +34,17 @@ class SignInViewModel @Inject constructor(
     }
 
     suspend fun onSignIn(context: Context): Boolean {
-        return authenticationRepository.signIn(
+        val isSignIn = authenticationRepository.signIn(
             email = _email.value,
             password = _password.value,
             context = context
         )
+        if (isSignIn) {
+            viewModelScope.launch {
+                authenticationRepository.updateTokensDb(fcmTokenProvider.getToken())
+            }
+        }
+        return isSignIn
     }
 
     suspend fun onResetPassword() : Boolean {

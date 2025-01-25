@@ -102,12 +102,10 @@ fun ChatListScreen(
         }
     }
 
+    viewModel.getMessages()
+
     val contacts = viewModel.contacts.collectAsState()
     val chats = viewModel.chats.collectAsState()
-
-    LaunchedEffect(chats) {
-        Log.d("TAG", "Сработал LaunchedEffect при обновлении chats: ${chats.value}")
-    }
 
     Scaffold(
         topBar = {
