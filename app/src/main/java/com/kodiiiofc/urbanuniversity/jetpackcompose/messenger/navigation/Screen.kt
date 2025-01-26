@@ -6,6 +6,7 @@ const val USER_ID = "userId"
 const val OTHER_USER_ID = "otherUserId"
 
 sealed class Screen(val route: String) {
+    data object Start : Screen("start")
     data object Home : Screen("home")
     data object SignIn : Screen("signIn")
     data object SignUp : Screen("signUp")

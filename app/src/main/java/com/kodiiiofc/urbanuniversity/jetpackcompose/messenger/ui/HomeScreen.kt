@@ -8,30 +8,16 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.navigation.Screen
-import java.util.UUID
 
 @Composable
 fun HomeScreen(navController: NavController,
                viewModel: HomeViewModel = hiltViewModel()) {
-
-    val context = LocalContext.current
-
-    LaunchedEffect(context) {
-        viewModel.onResumeSession(
-            context = context,
-            onSuccess = { userId ->
-                navController.navigate(Screen.ChatList.getChatList(UUID.fromString(userId)))
-            }
-        )
-    }
 
     Box(
         contentAlignment = Alignment.Center,

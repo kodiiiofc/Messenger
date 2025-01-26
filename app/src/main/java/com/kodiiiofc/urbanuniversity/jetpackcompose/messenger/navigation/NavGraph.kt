@@ -13,10 +13,11 @@ import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.ui.HomeScreen
 import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.ui.ResetPasswordScreen
 import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.ui.SignInScreen
 import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.ui.SignUpScreen
+import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.ui.StartScreen
 import java.util.UUID
 
 @Composable
-fun NavGraph(destination: String = Screen.Home.route, bundle: Bundle? = null) {
+fun NavGraph(destination: String = Screen.Start.route, bundle: Bundle? = null) {
 
     val navController = rememberNavController()
 
@@ -24,6 +25,7 @@ fun NavGraph(destination: String = Screen.Home.route, bundle: Bundle? = null) {
         navController = navController,
         startDestination = destination
     ) {
+        composable(Screen.Start.route) { StartScreen(navController) }
         composable(Screen.Home.route) { HomeScreen(navController) }
         composable(Screen.SignIn.route) { SignInScreen(navController) }
         composable(Screen.SignUp.route) { SignUpScreen(navController) }

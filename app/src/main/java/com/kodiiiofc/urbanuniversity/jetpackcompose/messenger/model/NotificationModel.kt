@@ -6,5 +6,5 @@ data class NotificationModel(
     val title: String,
     val body: String,
     val avatar: String?,
-    val icon: Int = R.drawable.chats
+    val icon: Int = R.drawable.chats,
 )

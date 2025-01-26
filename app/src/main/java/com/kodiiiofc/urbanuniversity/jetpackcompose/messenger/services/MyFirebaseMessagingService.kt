@@ -6,8 +6,10 @@ import android.app.PendingIntent
 import android.content.Intent
 import android.graphics.drawable.BitmapDrawable
 import android.os.Build
+import android.os.Bundle
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.core.os.bundleOf
 import coil.ImageLoader
 import coil.request.ImageRequest
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -22,7 +24,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import javax.inject.Inject
-import kotlin.math.log
 
 @AndroidEntryPoint
 class MyFirebaseMessagingService
@@ -42,35 +43,51 @@ class MyFirebaseMessagingService
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
 //        super.onMessageReceived(remoteMessage)
 
-        var senderUser: UserModel? = null
-        val sender = remoteMessage.data.get("sender")
-        if (sender != null) {
-            senderUser = Json.decodeFromString<UserModel>(sender.slice(1..sender.length - 2))
+        CoroutineScope(Dispatchers.IO).launch {
+            val userId = authenticationRepository.resumeSession(this@MyFirebaseMessagingService)
+
+
+            var senderUser: UserModel? = null
+            val sender = remoteMessage.data.get("sender")
+            if (sender != null) {
+                senderUser = Json.decodeFromString<UserModel>(sender.slice(1..sender.length - 2))
+            }
+
+            val notification = NotificationModel(
+                title = remoteMessage.notification?.title ?: "Уведомление",
+                body = remoteMessage.notification?.body ?: "Вам пришло уведомление",
+                avatar = senderUser!!.avatar
+            )
+
+            showNotification(notification, userId, senderUser.id)
+
+            Log.d("TAG", "onMessageReceived data: ${remoteMessage.data}")
+            Log.d("TAG", "onMessageReceived notification: ${remoteMessage.notification}")
+
         }
-
-        val notification = NotificationModel(
-            title = remoteMessage.notification?.title ?: "Уведомление",
-            body = remoteMessage.notification?.body ?: "Вам пришло уведомление",
-            avatar = senderUser?.avatar
-        )
-
-        showNotification(notification)
-
-        Log.d("TAG", "onMessageReceived data: ${remoteMessage.data}")
-        Log.d("TAG", "onMessageReceived notification: ${remoteMessage.notification}")
-
     }
 
-    private fun showNotification(notification: NotificationModel) {
+    private fun showNotification(notification: NotificationModel, userId: String?, otherUserId: String) {
+
+        val bundle: Bundle =  bundleOf(
+            "userId" to userId,
+            "otherUserId" to otherUserId
+        )
+
         val intent = Intent(this, MainActivity::class.java).apply {
             addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            if (userId != null) {
+                putExtras(bundle)
+            }
         }
+
         val pendingIntent = PendingIntent.getActivity(
             this,
             0,
             intent,
             PendingIntent.FLAG_IMMUTABLE
         )
+
         val channelId = "message"
         val imageLoader = ImageLoader(this)
         val request = ImageRequest.Builder(this)
