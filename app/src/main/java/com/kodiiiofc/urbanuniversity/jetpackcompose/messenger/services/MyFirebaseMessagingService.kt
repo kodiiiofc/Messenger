@@ -45,59 +45,47 @@ class MyFirebaseMessagingService
 
         CoroutineScope(Dispatchers.IO).launch {
             val userId = authenticationRepository.resumeSession(this@MyFirebaseMessagingService)
-
-
             var senderUser: UserModel? = null
             val sender = remoteMessage.data.get("sender")
             if (sender != null) {
                 senderUser = Json.decodeFromString<UserModel>(sender.slice(1..sender.length - 2))
             }
-
             val notification = NotificationModel(
                 title = remoteMessage.notification?.title ?: "Уведомление",
                 body = remoteMessage.notification?.body ?: "Вам пришло уведомление",
                 avatar = senderUser!!.avatar
             )
-
             showNotification(notification, userId, senderUser.id)
-
-            Log.d("TAG", "onMessageReceived data: ${remoteMessage.data}")
-            Log.d("TAG", "onMessageReceived notification: ${remoteMessage.notification}")
-
         }
     }
 
-    private fun showNotification(notification: NotificationModel, userId: String?, otherUserId: String) {
-
-        val bundle: Bundle =  bundleOf(
+    private fun showNotification(
+        notification: NotificationModel,
+        userId: String?,
+        otherUserId: String
+    ) {
+        val bundle: Bundle = bundleOf(
             "userId" to userId,
             "otherUserId" to otherUserId
         )
-
         val intent = Intent(this, MainActivity::class.java).apply {
             addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             if (userId != null) {
                 putExtras(bundle)
             }
         }
-
         val pendingIntent = PendingIntent.getActivity(
             this,
             0,
             intent,
             PendingIntent.FLAG_IMMUTABLE
         )
-
         val channelId = "message"
         val imageLoader = ImageLoader(this)
         val request = ImageRequest.Builder(this)
             .data(notification.avatar)
             .target { drawable ->
                 val bitmap = (drawable as BitmapDrawable).bitmap
-
-                Log.d("TAG", "showNotification drawable: $drawable")
-                Log.d("TAG", "showNotification bitmap: $bitmap")
-
                 val notificationBuilder = NotificationCompat
                     .Builder(this, channelId)
                     .setContentTitle(notification.title)
@@ -106,8 +94,8 @@ class MyFirebaseMessagingService
                     .setSmallIcon(notification.icon)
                     .setAutoCancel(true)
                     .setContentIntent(pendingIntent)
-
-                val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+                val notificationManager =
+                    getSystemService(NOTIFICATION_SERVICE) as NotificationManager
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     val channel = NotificationChannel(
                         channelId,
@@ -118,7 +106,6 @@ class MyFirebaseMessagingService
                 }
                 notificationManager.notify(0, notificationBuilder.build())
             }.build()
-
         imageLoader.enqueue(request)
     }
 }
