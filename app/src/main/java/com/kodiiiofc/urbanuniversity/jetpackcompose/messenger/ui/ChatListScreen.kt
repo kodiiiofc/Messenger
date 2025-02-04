@@ -111,7 +111,8 @@ fun ChatListScreen(
                         text = { Text(text = tab.title) },
                         icon = {
                             Icon(
-                                imageVector = if (index == selectedTab.intValue) tab.selectedIcon else tab.unselectedIcon,
+                                imageVector = if (index == selectedTab.intValue) tab.selectedIcon
+                                else tab.unselectedIcon,
                                 contentDescription = tab.title,
                             )
                         }
