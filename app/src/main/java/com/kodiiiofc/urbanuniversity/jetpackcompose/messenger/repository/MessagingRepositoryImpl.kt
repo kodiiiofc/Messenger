@@ -142,7 +142,7 @@ class MessagingRepositoryImpl
 
     override suspend fun uploadImage(message: MessageModel, file: File): MessageModel {
         val bucket = supabaseClient.storage["images"]
-        val filePath = "${message.sender_id}/${message.receiver_id}/${message.id}" /*todo*/
+        val filePath = "${message.sender_id}/${message.receiver_id}/${message.id}"
 
         bucket.upload(
             path = filePath,
