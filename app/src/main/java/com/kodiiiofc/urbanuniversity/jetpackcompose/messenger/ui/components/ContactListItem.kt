@@ -35,31 +35,13 @@ fun ContactListItem(contactListItemModel: UserModel, onItemClick: () -> Unit) {
             .padding(16.dp, 12.dp)
     ) {
         Image(
-            painter = /*contactListItemModel.avatar ?: */painterResource(R.drawable.avatar_empty),
+            painter = painterResource(R.drawable.avatar_empty),
             contentDescription = contactListItemModel.name,
             modifier = Modifier.size(40.dp)
         )
-
         Spacer(Modifier.size(16.dp))
-
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.CenterStart) {
             Text(text = contactListItemModel.name, fontSize = 16.sp, lineHeight = 24.sp)
         }
     }
 }
-
-//
-//@Preview(
-//    showBackground = true,
-//)
-//@Composable
-//fun ContactListItemPreview() {
-//
-//    val item = ContactListItemModel(
-//        userId = UUID.randomUUID(),
-//        name = "Vasya Pupkin",
-//        avatar = painterResource(AvatarResources.list[16])
-//    )
-//
-//    ContactListItem(item) {}
-//}

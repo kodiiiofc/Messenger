@@ -26,7 +26,6 @@ fun HomeScreen(navController: NavController,
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-
             Button(
                 onClick = {
                     navController.navigate(Screen.SignIn.route)
@@ -34,15 +33,12 @@ fun HomeScreen(navController: NavController,
             ) {
                 Text("Войти в учетную запись")
             }
-
             Spacer(Modifier.size(8.dp))
-
             Button(
                 onClick = { navController.navigate(Screen.SignUp.route) }
             ) {
                 Text("Регистрация")
             }
-
         }
     }
 }

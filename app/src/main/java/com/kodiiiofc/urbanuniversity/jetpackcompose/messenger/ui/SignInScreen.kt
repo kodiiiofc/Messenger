@@ -15,12 +15,11 @@ import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -52,7 +51,7 @@ fun SignInScreen(
     val password = viewModel.password.collectAsState()
 
     val imageProfile = remember {
-        mutableStateOf(AvatarResources.list.random())
+        mutableIntStateOf(AvatarResources.list.random())
     }
 
     Box(
@@ -70,7 +69,6 @@ fun SignInScreen(
                     .size(120.dp)
                     .weight(1f)
             )
-
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
@@ -103,10 +101,8 @@ fun SignInScreen(
                     visualTransformation = PasswordVisualTransformation(),
                     singleLine = true
                 )
-
                 Spacer(Modifier.size(24.dp))
                 val localSoftwareKeyboardController = LocalSoftwareKeyboardController.current
-
                 Button(
                     onClick = {
                         localSoftwareKeyboardController?.hide()
@@ -130,9 +126,7 @@ fun SignInScreen(
                 ) {
                     Text("Войти")
                 }
-
                 TextButton(onClick = {
-
                     coroutineScope.launch {
                         if (viewModel.onResetPassword()) {
                             Toast.makeText(

@@ -44,29 +44,24 @@ fun ResetPasswordScreen(
 ) {
     val token = bundle!!.getString("token")!!
     val coroutineScope = rememberCoroutineScope()
-
     val password = viewModel.password.collectAsState()
-
     val showPassoword = remember {
         mutableStateOf(false)
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
-
         Box(modifier = Modifier.weight(1f)) {
             Hint(
                 headline = "Восстановление пароля",
                 supportingText = "Укажите новый пароль для учетной записи"
             )
         }
-
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(3f)
         ) {
-
             OutlinedTextField(
                 value = password.value,
                 onValueChange = {
@@ -90,9 +85,7 @@ fun ResetPasswordScreen(
                 visualTransformation = if (showPassoword.value) VisualTransformation.None else PasswordVisualTransformation(),
                 singleLine = true
             )
-
             Spacer(Modifier.size(24.dp))
-
             Button(onClick =
             {
                 coroutineScope.launch {

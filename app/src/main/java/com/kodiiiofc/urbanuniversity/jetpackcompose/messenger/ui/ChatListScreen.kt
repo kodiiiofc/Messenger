@@ -1,7 +1,6 @@
 package com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.ui
 
 import android.app.Activity
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -33,7 +32,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -53,7 +51,6 @@ import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.navigation.Screen
 import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.ui.components.ChatListItem
 import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.ui.components.ContactListItem
 import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.ui.components.UserSearch
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.util.UUID
 
@@ -64,11 +61,9 @@ fun ChatListScreen(
     viewModel: ChatListViewModel = hiltViewModel()
 ) {
     viewModel.userId = userId.toString()
-
     val menuExpanded = remember {
         mutableStateOf(false)
     }
-
     val tabList = listOf(
         TabItem(
             title = "Чаты",
@@ -81,32 +76,24 @@ fun ChatListScreen(
             unselectedIcon = ImageVector.vectorResource(R.drawable.contacts),
         )
     )
-
     val selectedTab = remember {
         mutableIntStateOf(0)
     }
-
     val pagerState = rememberPagerState {
         tabList.size
     }
-
     val coroutineScope = rememberCoroutineScope()
-
     LaunchedEffect(selectedTab.intValue) {
         pagerState.animateScrollToPage(selectedTab.intValue)
     }
-
     LaunchedEffect(pagerState.currentPage, pagerState.isScrollInProgress) {
         if (!pagerState.isScrollInProgress) {
             selectedTab.intValue = pagerState.currentPage
         }
     }
-
     viewModel.getMessages()
-
     val contacts = viewModel.contacts.collectAsState()
     val chats = viewModel.chats.collectAsState()
-
     Scaffold(
         topBar = {
             TopBar(menuExpanded)

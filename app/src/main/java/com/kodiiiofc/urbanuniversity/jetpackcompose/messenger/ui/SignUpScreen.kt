@@ -58,7 +58,6 @@ fun SignUpScreen(
                     && passwordConfirmation != ""
         }
     }
-
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier.fillMaxSize()
@@ -67,7 +66,6 @@ fun SignUpScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxWidth()
         ) {
-
             Box(Modifier.weight(1f)) {
                 Hint(
                     headline = "Регистрация",
@@ -75,7 +73,6 @@ fun SignUpScreen(
                             "Регистрируясь, вы соглашаетесь с условиями использования приложения."
                 )
             }
-
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
@@ -139,7 +136,6 @@ fun SignUpScreen(
                 ) {
                     Text("Зарегистрироваться")
                 }
-
                 Spacer(Modifier.size(48.dp))
             }
         }

@@ -2,29 +2,15 @@ package com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.ui
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
-import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.model.MessageModel
 import com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.repository.MessagingRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.github.jan.supabase.realtime.PostgresAction
-import io.github.jan.supabase.realtime.channel
-import io.github.jan.supabase.realtime.postgresChangeFlow
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.last
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.json.Json
 import java.io.File
 import java.io.InputStream
 import java.util.UUID
@@ -48,9 +34,7 @@ class ChatViewModel
             receiver_id = receiverId.toString(),
             message = textMessage
         )
-
         if (file != null) message = messagingRepository.uploadImage(message, file)
-
         return messagingRepository.sendMessage(message)
     }
 

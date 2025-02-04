@@ -27,7 +27,6 @@ fun StartScreen(
 ) {
 
     val context = LocalContext.current
-
     LaunchedEffect(context) {
         viewModel.onResumeSession(
             context = context,
@@ -50,7 +49,6 @@ fun StartScreen(
         Spacer(Modifier.height(24.dp))
         CircularProgressIndicator()
     }
-
 }
 
 

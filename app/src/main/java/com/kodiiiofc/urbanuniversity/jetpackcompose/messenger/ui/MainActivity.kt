@@ -1,7 +1,6 @@
 package com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.ui
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -25,19 +24,14 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-
         messagingRepository.realtimeDB()
         CoroutineScope(Dispatchers.IO).launch {
             messagingRepository.getMessages()
         }
-
         setContent {
             MessengerTheme {
-
                 val userId = intent.extras?.getString("userId")
                 val otherUserId = intent.extras?.getString("otherUserId")
-
-                Log.d("TAG", "onCreate: ${userId} \n $otherUserId")
                 if (userId != null && otherUserId != null) {
                     NavGraph(
                         Screen.Chat.getChat(
@@ -45,7 +39,6 @@ class MainActivity : ComponentActivity() {
                         otherUserID = UUID.fromString(otherUserId)
                     ))
                 }
-
                 NavGraph()
             }
         }

@@ -15,7 +15,6 @@ class StartViewModel @Inject constructor(
     private val fcmTokenProvider: FcmTokenProvider
 ) : ViewModel() {
 
-
     fun onResumeSession(context: Context, onSuccess: (String) -> Unit, onDenied: () -> Unit) {
         viewModelScope.launch {
             val userId = authenticationRepository.resumeSession(context)

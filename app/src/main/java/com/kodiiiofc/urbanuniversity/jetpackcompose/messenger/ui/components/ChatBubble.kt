@@ -1,6 +1,5 @@
 package com.kodiiiofc.urbanuniversity.jetpackcompose.messenger.ui.components
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
@@ -11,9 +10,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -52,25 +49,6 @@ fun ChatBubbleUser(message: MessageModel) {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun ChatBubbleUserPreview() {
-
-    val text = "Купи хлеба и цветов для мамы, мы завтра едем к ней, не забыл?"
-
-    val message = MessageModel(
-
-        sender_id = "0000dsa",
-        receiver_id = "dsadsa",
-        message = text,
-
-
-        )
-
-    ChatBubbleUser(message)
-}
-
-
 @Composable
 fun ChatBubbleContact(message: MessageModel) {
     Surface(
@@ -102,22 +80,6 @@ fun ChatBubbleContact(message: MessageModel) {
             )
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun ChatBubbleContactPreview() {
-
-    val text =
-        "Тут вот очень длинное сообщение в несколько строк, может даже в три или в четыре строки"
-
-    val message = MessageModel(
-
-        sender_id = "0000dsa",
-        receiver_id = "dsadsa",
-        message = text,
-        )
-    ChatBubbleContact(message)
 }
 
 @Composable
