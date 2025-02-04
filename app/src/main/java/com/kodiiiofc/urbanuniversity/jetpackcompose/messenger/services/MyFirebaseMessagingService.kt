@@ -41,7 +41,7 @@ class MyFirebaseMessagingService
     }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
-//        super.onMessageReceived(remoteMessage)
+        super.onMessageReceived(remoteMessage)
 
         CoroutineScope(Dispatchers.IO).launch {
             val userId = authenticationRepository.resumeSession(this@MyFirebaseMessagingService)
