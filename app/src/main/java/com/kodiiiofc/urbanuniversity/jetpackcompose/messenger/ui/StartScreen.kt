@@ -34,7 +34,7 @@ fun StartScreen(
                 navController.navigate(Screen.ChatList.getChatList(UUID.fromString(userId)))
             },
             onDenied = {
-                navController.navigate(Screen.Home)
+                navController.navigate(Screen.Home.route)
             }
         )
     }
